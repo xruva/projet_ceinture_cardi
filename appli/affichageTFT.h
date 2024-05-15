@@ -28,6 +28,7 @@ void writeCardio(int16_t value);
 
 void initBuffer(int16_t *tableau,int taille);
 void updateRingBuffer(int16_t *tableau,int taille,adc_id_e channel);
+void addValue(int16_t *tableau,int taille,adc_id_e channel);
 
 void printCardioGraphe(int16_t *tableau, int taille);
 

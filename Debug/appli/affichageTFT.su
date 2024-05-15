@@ -5,4 +5,5 @@
 ../appli/affichageTFT.c:63:6:writeCardio	8	static
 ../appli/affichageTFT.c:68:6:initBuffer	0	static
 ../appli/affichageTFT.c:74:6:updateRingBuffer	16	static
-../appli/affichageTFT.c:92:6:printCardioGraphe	32	static
+../appli/affichageTFT.c:114:6:printCardioGraphe	32	static
+../appli/affichageTFT.c:91:6:addValue	16	static

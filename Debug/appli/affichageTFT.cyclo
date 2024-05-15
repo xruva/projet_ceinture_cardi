@@ -5,4 +5,5 @@
 ../appli/affichageTFT.c:63:6:writeCardio	1
 ../appli/affichageTFT.c:68:6:initBuffer	2
 ../appli/affichageTFT.c:74:6:updateRingBuffer	4
-../appli/affichageTFT.c:92:6:printCardioGraphe	3
+../appli/affichageTFT.c:114:6:printCardioGraphe	4
+../appli/affichageTFT.c:91:6:addValue	4

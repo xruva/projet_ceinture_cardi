@@ -16,7 +16,7 @@
 #define CAR_GPIO				GPIOA
 #define CAR_PIN					GPIO_PIN_0
 
-#define TAILLE 149
+#define TAILLE 150
 
 
 int16_t getCardio(adc_id_e channel);
@@ -67,14 +67,19 @@ int main(void)
 
 	int Wait2=0;
 	int wait3=0;
-
+	int static updateGraphiqueCardiaque = -1;
 	while(1)
 	{
 
 		uint16_t toto = getCardio(ADC_CAR);
-		updateRingBuffer(&cardiographe,TAILLE,ADC_CAR);
-		printCardioGraphe(&cardiographe,TAILLE);
+		//updateRingBuffer(&cardiographe,TAILLE,ADC_CAR);
+		//printCardioGraphe(&cardiographe,TAILLE);
 
+		if (updateGraphiqueCardiaque ==-1) updateGraphiqueCardiaque = HAL_GetTick();
+		if (HAL_GetTick()>=updateGraphiqueCardiaque+10){
+			addValue(cardiographe,TAILLE,ADC_CAR);
+			updateGraphiqueCardiaque = HAL_GetTick();
+		}
 /*		if(wait3==0){
 			printCardioGraphe(&cardiographe,TAILLE);
 			wait3=150;
