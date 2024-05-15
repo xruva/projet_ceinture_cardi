@@ -1,0 +1,9 @@
+../lib/hal/src/stm32f1xx_ll_utils.c:420:20:UTILS_SetFlashLatency	5
+../lib/hal/src/stm32f1xx_ll_utils.c:468:17:UTILS_GetPLLOutputFrequency	1
+../lib/hal/src/stm32f1xx_ll_utils.c:494:20:UTILS_PLL_IsBusy	2
+../lib/hal/src/stm32f1xx_ll_utils.c:184:6:LL_Init1msTick	1
+../lib/hal/src/stm32f1xx_ll_utils.c:200:6:LL_mDelay	4
+../lib/hal/src/stm32f1xx_ll_utils.c:258:6:LL_SetSystemCoreClock	1
+../lib/hal/src/stm32f1xx_ll_utils.c:534:20:UTILS_EnablePLLAndSwitchSystem	7
+../lib/hal/src/stm32f1xx_ll_utils.c:281:13:LL_PLL_ConfigSystemClock_HSI	4
+../lib/hal/src/stm32f1xx_ll_utils.c:346:13:LL_PLL_ConfigSystemClock_HSE	5

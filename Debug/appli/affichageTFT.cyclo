@@ -1,0 +1,8 @@
+../appli/affichageTFT.c:52:13:writeValueFloat	1
+../appli/affichageTFT.c:47:13:writeValueInt	1
+../appli/affichageTFT.c:4:6:initTemplate	1
+../appli/affichageTFT.c:58:6:writeTemp	1
+../appli/affichageTFT.c:62:6:writeCardio	1
+../appli/affichageTFT.c:67:6:initBuffer	2
+../appli/affichageTFT.c:73:6:updateRingBuffer	2
+../appli/affichageTFT.c:84:6:printCardioGraphe	2

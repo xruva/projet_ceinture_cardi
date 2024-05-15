@@ -1,0 +1,12 @@
+../lib/bsp/tft_ili9341/TFT_basic.c:291:10:PRIVATE_TFT_find_straigth_line	2
+../lib/bsp/tft_ili9341/TFT_basic.c:310:10:PRIVATE_TFT_compute_straigth	1
+../lib/bsp/tft_ili9341/TFT_basic.c:315:6:PRIVATE_TFT_find_middle	6
+../lib/bsp/tft_ili9341/TFT_basic.c:335:11:PRIVATE_TFT_find_base	16
+../lib/bsp/tft_ili9341/TFT_basic.c:365:6:PRIVATE_TFT_draw_object_line	3
+../lib/bsp/tft_ili9341/TFT_basic.c:238:6:PRIVATE_TFT_draw_filled_triangle	6
+../lib/bsp/tft_ili9341/TFT_basic.c:385:6:PRIVATE_TFT_draw_object_fill	3
+../lib/bsp/tft_ili9341/TFT_basic.c:66:6:TFT_init	1
+../lib/bsp/tft_ili9341/TFT_basic.c:71:6:TFT_clear	1
+../lib/bsp/tft_ili9341/TFT_basic.c:75:6:TFT_draw_object	3
+../lib/bsp/tft_ili9341/TFT_basic.c:90:6:TFT_clean_object	1
+../lib/bsp/tft_ili9341/TFT_basic.c:100:6:TFT_test_basic	1

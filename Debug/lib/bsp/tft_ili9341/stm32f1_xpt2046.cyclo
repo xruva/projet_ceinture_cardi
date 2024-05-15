@@ -1,0 +1,8 @@
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:319:15:XPT2046_getReading	1
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:339:13:XPT2046_convertCoordinateScreenMode	13
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:126:6:XPT2046_init	1
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:144:6:XPT2046_setConfig	1
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:155:8:XPT2046_getCoordinates	8
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:218:8:XPT2046_getAverageCoordinates	10
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:261:8:XPT2046_getMedianCoordinates	13
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.c:89:6:XPT2046_demo	2
