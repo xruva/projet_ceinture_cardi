@@ -1,6 +1,7 @@
 
 #include "affichageTFT.h"
-
+uint16_t MAX_Plage = 3000;
+uint16_t MIN_Plage = 2780;
 void initTemplate(void){
 
 	ILI9341_Init();
@@ -66,12 +67,19 @@ void writeCardio(int16_t value){
 //Partie graphe
 void initBuffer(int16_t *tableau,int taille){
 	for(int i = 0; i < taille; i++){
-		tableau[i] = 0;
+		tableau[i] = -1;
 	}
 }
 
 void updateRingBuffer(int16_t *tableau,int taille,adc_id_e channel) {
 	int16_t newValue = getCardio(channel);
+	if(newValue < MIN_Plage){
+		newValue=0;
+	}else if(newValue > MAX_Plage){
+		newValue=MAX_Plage-MIN_Plage;
+	}else {
+		newValue-=MIN_Plage;
+	}
 
     for (int i = 0; i < taille; i++) {
     	int16_t tempon = tableau[i];
@@ -86,8 +94,10 @@ void printCardioGraphe(int16_t *tableau, int taille){
 
 	for(int i = 0; i < taille; i++){
 		int x = 21+i;
-		int y = 98-((int)(((tableau[i]/4095.0)*300)-200))+21;
-		ILI9341_DrawPixel(x,y,ILI9341_COLOR_RED);
+
+		int calibrageValeur = (tableau[i]*100/(MAX_Plage-MIN_Plage));
+		int y = 119-calibrageValeur;
+		if(tableau[i]!=-1) ILI9341_DrawPixel(x,y,ILI9341_COLOR_RED);
 	}
 	//ILI9341_DrawRectangle(20,20,170,120,ILI9341_COLOR_GREEN);
 }

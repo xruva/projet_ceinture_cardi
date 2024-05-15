@@ -1,8 +1,8 @@
-../appli/affichageTFT.c:52:13:writeValueFloat	32	static
-../appli/affichageTFT.c:47:13:writeValueInt	24	static
-../appli/affichageTFT.c:4:6:initTemplate	32	static
-../appli/affichageTFT.c:58:6:writeTemp	8	static
-../appli/affichageTFT.c:62:6:writeCardio	8	static
-../appli/affichageTFT.c:67:6:initBuffer	0	static
-../appli/affichageTFT.c:73:6:updateRingBuffer	16	static
-../appli/affichageTFT.c:84:6:printCardioGraphe	32	static
+../appli/affichageTFT.c:53:13:writeValueFloat	32	static
+../appli/affichageTFT.c:48:13:writeValueInt	24	static
+../appli/affichageTFT.c:5:6:initTemplate	32	static
+../appli/affichageTFT.c:59:6:writeTemp	8	static
+../appli/affichageTFT.c:63:6:writeCardio	8	static
+../appli/affichageTFT.c:68:6:initBuffer	0	static
+../appli/affichageTFT.c:74:6:updateRingBuffer	16	static
+../appli/affichageTFT.c:92:6:printCardioGraphe	32	static

@@ -19,6 +19,8 @@
 #include "tft_ili9341/stm32f1_ili9341.h"
 #include "tft_ili9341/stm32f1_xpt2046.h"
 
+
+
 void initTemplate(void);
 
 void writeTemp(float value);

@@ -16,7 +16,7 @@
 #define CAR_GPIO				GPIOA
 #define CAR_PIN					GPIO_PIN_0
 
-#define TAILLE 150
+#define TAILLE 149
 
 
 int16_t getCardio(adc_id_e channel);
