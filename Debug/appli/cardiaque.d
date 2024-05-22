@@ -1,9 +1,11 @@
-appli/main.o: ../appli/main.c ../lib/hal/inc/stm32f1xx_hal.h \
- ../lib/hal/inc/stm32f1xx_hal_conf.h ../lib/hal/inc/stm32f1xx_hal_rcc.h \
- ../lib/hal/inc/stm32f1xx_hal_def.h ../lib/CMSIS/device/stm32f1xx.h \
- ../lib/CMSIS/device/stm32f103xb.h ../lib/CMSIS/core/core_cm3.h \
- ../lib/CMSIS/core/core_cmInstr.h ../lib/CMSIS/core/cmsis_gcc.h \
- ../lib/CMSIS/core/core_cmFunc.h ../lib/CMSIS/device/system_stm32f1xx.h \
+appli/cardiaque.o: ../appli/cardiaque.c ../appli/affichageTFT.h \
+ ../lib/bsp/stm32f1_adc.h ../appli/config.h \
+ ../lib/hal/inc/stm32f1xx_hal.h ../lib/hal/inc/stm32f1xx_hal_conf.h \
+ ../lib/hal/inc/stm32f1xx_hal_rcc.h ../lib/hal/inc/stm32f1xx_hal_def.h \
+ ../lib/CMSIS/device/stm32f1xx.h ../lib/CMSIS/device/stm32f103xb.h \
+ ../lib/CMSIS/core/core_cm3.h ../lib/CMSIS/core/core_cmInstr.h \
+ ../lib/CMSIS/core/cmsis_gcc.h ../lib/CMSIS/core/core_cmFunc.h \
+ ../lib/CMSIS/device/system_stm32f1xx.h \
  ../lib/hal/inc/stm32f1xx_hal_rcc_ex.h \
  ../lib/hal/inc/stm32f1xx_hal_gpio.h \
  ../lib/hal/inc/stm32f1xx_hal_gpio_ex.h \
@@ -22,13 +24,13 @@ appli/main.o: ../appli/main.c ../lib/hal/inc/stm32f1xx_hal.h \
  ../lib/hal/inc/stm32f1xx_hal_uart.h ../lib/hal/inc/stm32f1xx_hal_usart.h \
  ../lib/hal/inc/stm32f1xx_hal_wwdg.h ../lib/hal/inc/stm32f1xx_hal_pcd.h \
  ../lib/hal/inc/stm32f1xx_ll_usb.h ../lib/hal/inc/stm32f1xx_hal_pcd_ex.h \
- ../lib/hal/inc/stm32f1xx_hal_hcd.h ../lib/bsp/stm32f1_sys.h \
- ../lib/bsp/stm32f1_uart.h ../lib/bsp/macro_types.h ../appli/config.h \
- ../lib/bsp/stm32f1_adc.h ../lib/bsp/MPU6050/stm32f1_mpu6050.h \
- ../appli/affichageTFT.h ../lib/bsp/tft_ili9341/stm32f1_ili9341.h \
+ ../lib/hal/inc/stm32f1xx_hal_hcd.h ../lib/bsp/macro_types.h \
+ ../lib/bsp/tft_ili9341/stm32f1_ili9341.h \
  ../lib/bsp/tft_ili9341/stm32f1_fonts.h \
- ../lib/bsp/tft_ili9341/stm32f1_xpt2046.h ../lib/bsp/macro_types.h \
- ../appli/mpc9701.h ../appli/config.h ../appli/cardiaque.h
+ ../lib/bsp/tft_ili9341/stm32f1_xpt2046.h ../lib/bsp/macro_types.h
+../appli/affichageTFT.h:
+../lib/bsp/stm32f1_adc.h:
+../appli/config.h:
 ../lib/hal/inc/stm32f1xx_hal.h:
 ../lib/hal/inc/stm32f1xx_hal_conf.h:
 ../lib/hal/inc/stm32f1xx_hal_rcc.h:
@@ -72,17 +74,8 @@ appli/main.o: ../appli/main.c ../lib/hal/inc/stm32f1xx_hal.h \
 ../lib/hal/inc/stm32f1xx_ll_usb.h:
 ../lib/hal/inc/stm32f1xx_hal_pcd_ex.h:
 ../lib/hal/inc/stm32f1xx_hal_hcd.h:
-../lib/bsp/stm32f1_sys.h:
-../lib/bsp/stm32f1_uart.h:
 ../lib/bsp/macro_types.h:
-../appli/config.h:
-../lib/bsp/stm32f1_adc.h:
-../lib/bsp/MPU6050/stm32f1_mpu6050.h:
-../appli/affichageTFT.h:
 ../lib/bsp/tft_ili9341/stm32f1_ili9341.h:
 ../lib/bsp/tft_ili9341/stm32f1_fonts.h:
 ../lib/bsp/tft_ili9341/stm32f1_xpt2046.h:
 ../lib/bsp/macro_types.h:
-../appli/mpc9701.h:
-../appli/config.h:
-../appli/cardiaque.h:

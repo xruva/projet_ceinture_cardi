@@ -1,0 +1,3 @@
+../appli/cardiaque.c:10:6:addValue	4
+../appli/cardiaque.c:44:6:initBuffer	2
+../appli/cardiaque.c:50:6:updateRingBuffer	4

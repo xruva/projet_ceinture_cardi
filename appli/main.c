@@ -8,19 +8,26 @@
 #include "MPU6050/stm32f1_mpu6050.h"
 #include "affichageTFT.h"
 #include "mpc9701.h"
+#include "cardiaque.h"
 
-#define ADC_CAR ADC_0
-
+//Pota
+#define POT_GPIO				GPIOA
+#define POT_PIN					GPIO_PIN_4
+#define ADC_POT ADC_4
 
 //Cardio
 #define CAR_GPIO				GPIOA
 #define CAR_PIN					GPIO_PIN_0
+#define ADC_CAR ADC_0
 
 #define TAILLE 150
 
 
 int16_t getCardio(adc_id_e channel);
+int16_t getAmpliResp(adc_id_e channel);
+
 int16_t cardiographe[TAILLE];
+int getBPM(int16_t *tableau);
 
 
 int Threshold = 2500;       // Determine which Signal to "count as a beat" and which to ignore.
@@ -54,6 +61,10 @@ int main(void)
 	BSP_GPIO_PinCfg(BLUE_BUTTON_GPIO, BLUE_BUTTON_PIN, GPIO_MODE_INPUT,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
 
 
+	//Initialisation du port du pota en sortie Push-Pull
+	BSP_GPIO_PinCfg(POT_GPIO, POT_PIN, GPIO_MODE_OUTPUT_PP,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
+	HAL_GPIO_WritePin(POT_GPIO, POT_PIN, GPIO_PIN_SET);
+
 	initTemplate();
 	Cardio_init();
 	initBuffer(&cardiographe,TAILLE);
@@ -69,35 +80,13 @@ int main(void)
 	while(1)
 	{
 
-		uint16_t toto = getCardio(ADC_CAR);
-		//updateRingBuffer(&cardiographe,TAILLE,ADC_CAR);
-		//printCardioGraphe(&cardiographe,TAILLE);
-
 		if (updateGraphiqueCardiaque ==-1) updateGraphiqueCardiaque = HAL_GetTick();
-		if (HAL_GetTick()>=updateGraphiqueCardiaque+10){
+		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
+			uint16_t tutu = getAmpliResp(ADC_POT);
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
 		}
-/*		if(wait3==0){
-			printCardioGraphe(&cardiographe,TAILLE);
-			wait3=150;
-		}else{
-			wait3--;
-		}*/
 
-
-//		MPU6050_ReadAll(&datas);
-//		if(datas.Accelerometer_X <0) writeLED(0);
-//		else writeLED(1);
-
-		//getTemp(ADC_TEMP);
-		/*
-		if (index==(TAILLE+1)) index=0;
-		cardiographe[index] = ADC_getValue(ADC_0);
-
-		if (index==TAILLE) cardiographe[0] = -1;
-		else cardiographe[index+1] = -1;
-		*/
 
 		if(Wait2==0){
 			writeTemp(getTemp(ADC_TEMP));
@@ -106,32 +95,7 @@ int main(void)
 		}else{
 			Wait2--;
 		}
-/*
-		if(Wait1==0){
 
-			writeCardio(getCardio(ADC_CAR));
-			//Réduction du temps de rafraichissement
-			Wait1 = 100000;
-				}else{
-					Wait1--;
-				}
-*/
-
-		/*		Signal = getCardio(ADC_CAR);
-
-		if(Signal > Threshold){                // If the signal is above threshold, turn on the LED
-			ILI9341_DrawFilledRectangle(270,20,300,50,ILI9341_COLOR_GREEN);
-			ILI9341_DrawRectangle(270,20,300,50,ILI9341_COLOR_BLACK);
-			} else {
-				ILI9341_DrawFilledRectangle(270,20,300,50,ILI9341_COLOR_RED);
-				ILI9341_DrawRectangle(270,20,300,50,ILI9341_COLOR_BLACK);
-			}
-			HAL_Delay(10) ;
-			*/
-
-//		if((value>2045)readButton())
-//else,
-//			writeLED(1);
 	}
 }
 
@@ -141,6 +105,11 @@ int16_t getCardio(adc_id_e channel){
 	return value;
 }
 
+int16_t getAmpliResp(adc_id_e channel){
+	int16_t value = ADC_getValue(channel);
+
+	return value;
+}
 
 
 void Cardio_init(void)
@@ -149,3 +118,13 @@ void Cardio_init(void)
 	BSP_GPIO_PinCfg(CAR_GPIO, CAR_PIN, GPIO_MODE_OUTPUT_PP,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
 	HAL_GPIO_WritePin(CAR_GPIO, CAR_PIN, GPIO_PIN_SET);
 }
+/*
+int getBPM(int16_t *tableau,int taille){
+	bool FM = false;
+	bool FD = false;
+	int borneFM = valeurMoyenne+5;
+	int borneFD = valeurMoyenne-3;
+	for(int i; i<taille;i++){
+		if(tableau[i]>(valeurMoyenne+5))
+	}
+}*/

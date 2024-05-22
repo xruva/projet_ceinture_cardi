@@ -63,7 +63,7 @@
 	#define USE_AN1			1	//Broche correspondante : PA1
 	#define USE_AN2			0	//Broche correspondante : PA2	//Sur la Nucleo, cette broche n'est pas câblée !
 	#define USE_AN3			0	//Broche correspondante : PA3	//Sur la Nucleo, cette broche n'est pas câblée !
-	#define USE_AN4			0	//Broche correspondante : PA4
+	#define USE_AN4			1	//Broche correspondante : PA4
 	#define USE_AN5			0	//Broche correspondante : PA5
 	#define USE_AN6			0	//Broche correspondante : PA6
 	#define USE_AN7			0	//Broche correspondante : PA7
