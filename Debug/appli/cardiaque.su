@@ -1,3 +1,4 @@
-../appli/cardiaque.c:10:6:addValue	16	static
-../appli/cardiaque.c:44:6:initBuffer	0	static
-../appli/cardiaque.c:50:6:updateRingBuffer	16	static
+../appli/cardiaque.c:17:6:Cardio_init	16	static
+../appli/cardiaque.c:23:6:addValue	16	static
+../appli/cardiaque.c:57:6:initBuffer	0	static
+../appli/cardiaque.c:63:6:updateRingBuffer	16	static

@@ -15,15 +15,12 @@
 #define POT_PIN					GPIO_PIN_4
 #define ADC_POT ADC_4
 
-//Cardio
-#define CAR_GPIO				GPIOA
-#define CAR_PIN					GPIO_PIN_0
-#define ADC_CAR ADC_0
+
 
 #define TAILLE 150
 
 
-int16_t getCardio(adc_id_e channel);
+
 int16_t getAmpliResp(adc_id_e channel);
 
 int16_t cardiographe[TAILLE];
@@ -33,6 +30,7 @@ int getBPM(int16_t *tableau);
 int Threshold = 2500;       // Determine which Signal to "count as a beat" and which to ignore.
 int Wait = 0;
 int Wait1 = 0;
+uint16_t static tututu = 0;
 
 
 
@@ -62,12 +60,12 @@ int main(void)
 
 
 	//Initialisation du port du pota en sortie Push-Pull
-	BSP_GPIO_PinCfg(POT_GPIO, POT_PIN, GPIO_MODE_OUTPUT_PP,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
-	HAL_GPIO_WritePin(POT_GPIO, POT_PIN, GPIO_PIN_SET);
+	BSP_GPIO_PinCfg(POT_GPIO, POT_PIN, GPIO_MODE_INPUT,GPIO_NOPULL,GPIO_SPEED_FREQ_MEDIUM);
+
 
 	initTemplate();
 	Cardio_init();
-	initBuffer(&cardiographe,TAILLE);
+
 
 
 	//Initialisation de la liaision I2C, ainsi que l'acc�l�rom�tre
@@ -75,14 +73,14 @@ int main(void)
 
 
 	int Wait2=0;
-	int wait3=0;
-	int static updateGraphiqueCardiaque = -1;
+	int updateGraphiqueCardiaque = HAL_GetTick();
 	while(1)
 	{
 
-		if (updateGraphiqueCardiaque ==-1) updateGraphiqueCardiaque = HAL_GetTick();
+		//if (updateGraphiqueCardiaque ==-1) updateGraphiqueCardiaque = HAL_GetTick();
 		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
-			uint16_t tutu = getAmpliResp(ADC_POT);
+
+			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
 		}
@@ -99,25 +97,15 @@ int main(void)
 	}
 }
 
-int16_t getCardio(adc_id_e channel){
-	int16_t value = ADC_getValue(channel);
-
-	return value;
-}
 
 int16_t getAmpliResp(adc_id_e channel){
-	int16_t value = ADC_getValue(channel);
+	int16_t input = ADC_getValue(channel);
 
-	return value;
+	return input;
 }
 
 
-void Cardio_init(void)
-{
-	//Initialisation du port du capteur cardiaque en sortie Push-Pull
-	BSP_GPIO_PinCfg(CAR_GPIO, CAR_PIN, GPIO_MODE_OUTPUT_PP,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
-	HAL_GPIO_WritePin(CAR_GPIO, CAR_PIN, GPIO_PIN_SET);
-}
+
 /*
 int getBPM(int16_t *tableau,int taille){
 	bool FM = false;

@@ -5,12 +5,25 @@
  *      Author: vauraudren
  */
 #include "affichageTFT.h"
+
+//Cardio
+#define CAR_GPIO				GPIOA
+#define CAR_PIN					GPIO_PIN_0
+adc_id_e ADC_CAR = ADC_0;
+
 int valeurMoyenne = 0;
+
+
+void Cardio_init(void)
+{
+	//Initialisation du port du capteur cardiaque en sortie
+	BSP_GPIO_PinCfg(CAR_GPIO, CAR_PIN, GPIO_MODE_INPUT,GPIO_NOPULL,GPIO_SPEED_FREQ_HIGH);
+}
 
 void addValue(int16_t *tableau,int taille,adc_id_e channel){
 	int static i = 0;
 	int static somme = 0;
-	int16_t newValue = getCardio(channel);
+	int16_t newValue = ADC_getValue(channel);
 	//volatile int16_t min = newValue;
 	//volatile int16_t max = newValue;
 
