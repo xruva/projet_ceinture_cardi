@@ -70,7 +70,7 @@
 	#define USE_AN8			0	//Broche correspondante : PB0
 	#define USE_AN9			0	//Broche correspondante : PB1
 	#define USE_AN10		0	//Broche correspondante : PC0	//Sur la Bluepill, cette broche n'est pas câblée !
-	#define USE_AN11		0	//Broche correspondante : PC1	//Sur la Bluepill, cette broche n'est pas câblée !
+	#define USE_AN11		1	//Broche correspondante : PC1	//Sur la Bluepill, cette broche n'est pas câblée !
 	#define USE_AN12		0	//Broche correspondante : PC2	//Sur la Bluepill, cette broche n'est pas câblée !
 	#define USE_AN13		0	//Broche correspondante : PC3	//Sur la Bluepill, cette broche n'est pas câblée !
 	#define USE_AN14		0	//Broche correspondante : PC4	//Sur la Bluepill, cette broche n'est pas câblée !

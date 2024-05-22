@@ -11,9 +11,9 @@
 #include "cardiaque.h"
 
 //Pota
-#define POT_GPIO				GPIOA
-#define POT_PIN					GPIO_PIN_4
-#define ADC_POT ADC_4
+#define POT_GPIO				GPIOC
+#define POT_PIN					GPIO_PIN_1
+#define ADC_POT ADC_11
 
 
 
@@ -72,26 +72,28 @@ int main(void)
 	//MPU6050_Init(&datas, GPIOA, GPIO_PIN_0, MPU6050_Device_0, MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
 
 
-	int Wait2=0;
-	int updateGraphiqueCardiaque = HAL_GetTick();
+
+	int32_t updateGraphiqueCardiaque = HAL_GetTick();
+	int32_t updateTemp = HAL_GetTick();
+
 	while(1)
 	{
 
-		//if (updateGraphiqueCardiaque ==-1) updateGraphiqueCardiaque = HAL_GetTick();
 		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
-
+			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);
 			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
+			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
+			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
+			Delay_ms(1);
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
 		}
 
 
-		if(Wait2==0){
-			writeTemp(getTemp(ADC_TEMP));
-			//Réduction du temps de rafraichissement
-			Wait2 = 20;
-		}else{
-			Wait2--;
+		if(HAL_GetTick()>=updateTemp+1000){
+			float temp = getTemp(ADC_TEMP);
+			writeTemp(temp);
+			updateTemp= HAL_GetTick();
 		}
 
 	}
