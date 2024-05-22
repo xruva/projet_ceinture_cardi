@@ -97,7 +97,7 @@ int main(void)
 		*/
 
 		if(Wait2==0){
-			writeTemp(getTemp(ADC_TEMP));
+			writeTemp(getTemp(ADC_0));
 			//Réduction du temps de rafraichissement
 			Wait2 = 20;
 		}else{

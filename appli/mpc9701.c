@@ -8,7 +8,7 @@
 
 float getTemp(adc_id_e channel){
 
-	int valeurAnalogique = 0;
+	int16_t valeurAnalogique = 0;
 
 	//Phase d'échantillonage
 	for (int i = 0; i < 20;i++){
