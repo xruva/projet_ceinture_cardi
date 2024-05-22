@@ -1,7 +1,7 @@
 
 #include "affichageTFT.h"
-uint16_t MAX_Plage = 3950;
-uint16_t MIN_Plage = 3300;
+uint16_t MAX_Plage = 3800;
+uint16_t MIN_Plage = 3600;
 void initTemplate(void){
 
 	ILI9341_Init();

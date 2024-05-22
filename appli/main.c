@@ -27,35 +27,6 @@ int Threshold = 2500;       // Determine which Signal to "count as a beat" and w
 int Wait = 0;
 int Wait1 = 0;
 
-// VARIABLES USED TO DETERMINE SAMPLE JITTER & TIME OUT
-volatile unsigned int eventCounter, thisTime, lastTime, elapsedTime;
-volatile int sumJitter, firstTime, secondTime, duration;
-volatile int jitter;
-unsigned int timeOutStart, dataRequestStart, m;
-// VARIABLES USED TO DETERMINE BPM
-volatile int Signal;
-volatile unsigned int sampleCounter;
-volatile int threshSetting,lastBeatTime,fadeLevel;
-volatile int thresh = 550;      // SHOULD BE ADJUSTABLE ON COMMAND LINE
-volatile int P = 512;           // set P default
-volatile int T = 512;           // set T default
-volatile int firstBeat = 1;     // set these to avoid noise
-volatile int secondBeat = 0;    // when we get the heartbeat back
-volatile int QS = 0;
-volatile int rate[10];
-volatile int BPM = 0;
-volatile int IBI = 600;         // 600ms per beat = 100 Beats Per Minute (BPM)
-volatile int Pulse = 0;         // set to 1 while Signal > Threshold
-volatile int amp = 100;         // beat amplitude 1/10 of input range
-volatile int sampleFlag = 0;
-
-// FILE STUFF
-char rawDatafilename [100];
-
-struct tm *timenow;
-// FUNCTION PROTOTYPES
-void getPulse(void);
-void initPulseSensorVariables(void);
 
 
 int main(void)
@@ -86,7 +57,7 @@ int main(void)
 	initTemplate();
 	Cardio_init();
 	initBuffer(&cardiographe,TAILLE);
-	initPulseSensorVariables();
+
 
 	//Initialisation de la liaision I2C, ainsi que l'acc�l�rom�tre
 	//MPU6050_Init(&datas, GPIOA, GPIO_PIN_0, MPU6050_Device_0, MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
@@ -97,7 +68,7 @@ int main(void)
 	int static updateGraphiqueCardiaque = -1;
 	while(1)
 	{
-		//getPulse2();
+
 		uint16_t toto = getCardio(ADC_CAR);
 		//updateRingBuffer(&cardiographe,TAILLE,ADC_CAR);
 		//printCardioGraphe(&cardiographe,TAILLE);
