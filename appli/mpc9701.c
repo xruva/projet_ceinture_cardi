@@ -8,14 +8,17 @@
 
 float getTemp(adc_id_e channel){
 
-	int valeurAnalogique = 0;
-
+	int16_t valeurAnalogique = 0;
+	int16_t valeurTemporaire = 0;
 	//Phase d'échantillonage
-	for (int i = 0; i < 20;i++){
-		valeurAnalogique += ADC_getValue(channel);
+	for (int i = 0; i < 30;i++){
+		valeurTemporaire = ADC_getValue(channel);
+		if(i>4){
+			valeurAnalogique += valeurTemporaire;
+		}
 	}
 
-	float echantillonage = valeurAnalogique / 20;
+	float echantillonage = valeurAnalogique / 25;
 
 
     // Convertir la valeur analogique en tension (en volts)

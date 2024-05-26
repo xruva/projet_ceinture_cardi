@@ -18,13 +18,15 @@
 
 
 #define TAILLE 150
+#define DELTAFM 5
+#define DELTAFD 3
 
 
 
 int16_t getAmpliResp(adc_id_e channel);
 
 int16_t cardiographe[TAILLE];
-int getBPM(int16_t *tableau);
+int16_t getBPM(int16_t *tableau, int taille);
 
 
 int Threshold = 2500;       // Determine which Signal to "count as a beat" and which to ignore.
@@ -80,11 +82,10 @@ int main(void)
 	{
 
 		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
-			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);
-			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
-			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
-			tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
-			Delay_ms(1);
+			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);
+			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
+			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
+			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
 		}
@@ -106,15 +107,31 @@ int16_t getAmpliResp(adc_id_e channel){
 	return input;
 }
 
+int16_t getValeurMoyenne(int16_t *signal, size_t taille) {
+    int32_t sum = 0;
+    for (size_t i = 0; i < taille; i++) {
+        sum += signal[i];
+    }
+    return (int16_t)(sum / taille);
+}
 
 
-/*
-int getBPM(int16_t *tableau,int taille){
-	bool FM = false;
-	bool FD = false;
-	int borneFM = valeurMoyenne+5;
-	int borneFD = valeurMoyenne-3;
-	for(int i; i<taille;i++){
-		if(tableau[i]>(valeurMoyenne+5))
+int16_t getBPM(int16_t *tableau,int taille){
+
+	int16_t mean = getValeurMoyenne(tableau,taille);
+	int16_t tempsPic[2]= {0,0};
+	int16_t indexPic = 0;
+	for(int16_t index; ((index < taille - 10) || (indexPic==2)) ; index++){
+		if ((tableau[index] > mean + DELTAFM) && (tableau[index + 10] <= mean - DELTAFD)){
+			tempsPic[indexPic] = index;
+			indexPic++;
+			index +=10;
+		}
 	}
-}*/
+
+	if(indexPic == 2) return (60000/((tempsPic[1]-tempsPic[0])*20));
+
+	//erreur calcul
+	return -1;
+
+}

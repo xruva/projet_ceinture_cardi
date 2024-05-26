@@ -42,16 +42,16 @@ void addValue(int16_t *tableau,int taille,adc_id_e channel){
     	tableau[i] = newValue;
     	//newValue = tempon;
     	i++;
-    //if(i%(taille/2) == 0) {
-    	//printCardioGraphe(tableau,taille);
     	if(i==taille){
     		i=0;
     		printCardioGraphe(tableau,taille);
+    		writeBPM(getBPM(tableau,taille));
+
     		valeurMoyenne= somme/taille;
     		somme = 0;
     	}
 
-    //}
+
 }
 //Partie graphe
 void initBuffer(int16_t *tableau,int taille){

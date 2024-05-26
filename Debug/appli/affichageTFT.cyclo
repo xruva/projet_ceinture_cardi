@@ -3,5 +3,6 @@
 ../appli/affichageTFT.c:7:6:initTemplate	1
 ../appli/affichageTFT.c:61:6:writeTemp	1
 ../appli/affichageTFT.c:65:6:writeCardio	1
-../appli/affichageTFT.c:71:6:printCardioGraphe	4
-../appli/affichageTFT.c:94:6:presence	1
+../appli/affichageTFT.c:70:6:writeBPM	1
+../appli/affichageTFT.c:73:6:printCardioGraphe	4
+../appli/affichageTFT.c:96:6:presence	1

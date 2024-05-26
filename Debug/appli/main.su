@@ -1,2 +1,4 @@
-../appli/main.c:37:5:main	24	static
-../appli/main.c:101:9:getAmpliResp	8	static
+../appli/main.c:39:5:main	24	static
+../appli/main.c:104:9:getAmpliResp	8	static
+../appli/main.c:110:9:getValeurMoyenne	0	static
+../appli/main.c:119:9:getBPM	24	static

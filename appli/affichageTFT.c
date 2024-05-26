@@ -67,7 +67,9 @@ void writeCardio(int16_t value){
 }
 
 
-
+void writeBPM(int16_t BPM){
+	ILI9341_printf(200, 30, &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE, "%d",BPM);
+}
 void printCardioGraphe(int16_t *tableau, int taille){
 	ILI9341_DrawFilledRectangle(21,21,169,119,ILI9341_COLOR_WHITE);
 	int countDown= 0;

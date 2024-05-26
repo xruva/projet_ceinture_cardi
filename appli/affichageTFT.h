@@ -26,6 +26,7 @@ void initTemplate(void);
 
 void writeTemp(float value);
 void writeCardio(int16_t value);
+void writeBPM(int16_t BPM);
 
 
 
