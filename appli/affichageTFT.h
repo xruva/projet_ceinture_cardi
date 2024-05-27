@@ -15,7 +15,7 @@
 //#include "macro_types.h"
 //#include "stm32f1_gpio.h"
 #include "stm32f1_adc.h"
-//#include "MPU6050/stm32f1_mpu6050.h"
+#include "MPU6050/stm32f1_mpu6050.h"
 #include "tft_ili9341/stm32f1_ili9341.h"
 #include "tft_ili9341/stm32f1_xpt2046.h"
 

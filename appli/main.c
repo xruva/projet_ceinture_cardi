@@ -2,7 +2,7 @@
 //#include "stm32f1xx_nucleo.h"
 //#include "stm32f1_uart.h"
 #include "stm32f1_sys.h"
-//#include "macro_types.h"
+#include "macro_types.h"
 //#include "stm32f1_gpio.h"
 #include "stm32f1_adc.h"
 #include "MPU6050/stm32f1_mpu6050.h"
@@ -18,22 +18,20 @@
 
 
 #define TAILLE 150
-#define DELTAFM 5
-#define DELTAFD 3
+
 
 
 
 int16_t getAmpliResp(adc_id_e channel);
 
 int16_t cardiographe[TAILLE];
-int16_t getBPM(int16_t *tableau, int taille);
 
 
 int Threshold = 2500;       // Determine which Signal to "count as a beat" and which to ignore.
 int Wait = 0;
 int Wait1 = 0;
 uint16_t static tututu = 0;
-
+MPU6050_t datas;
 
 
 int main(void)
@@ -54,16 +52,17 @@ int main(void)
 	SYS_set_std_usart(UART2_ID, UART2_ID, UART2_ID);
 
 	//Initialisation du port de la led Verte (carte Nucleo)
-	BSP_GPIO_PinCfg(LED_GREEN_GPIO, LED_GREEN_PIN, GPIO_MODE_OUTPUT_PP,GPIO_NOPULL,GPIO_SPEED_FREQ_HIGH);
+	//BSP_GPIO_PinCfg(LED_GREEN_GPIO, LED_GREEN_PIN, GPIO_MODE_OUTPUT_PP,GPIO_NOPULL,GPIO_SPEED_FREQ_HIGH);
 
 
 	//Initialisation du port du bouton bleu (carte Nucleo)
-	BSP_GPIO_PinCfg(BLUE_BUTTON_GPIO, BLUE_BUTTON_PIN, GPIO_MODE_INPUT,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
+	//BSP_GPIO_PinCfg(BLUE_BUTTON_GPIO, BLUE_BUTTON_PIN, GPIO_MODE_INPUT,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
 
 
 	//Initialisation du port du pota en sortie Push-Pull
 	BSP_GPIO_PinCfg(POT_GPIO, POT_PIN, GPIO_MODE_INPUT,GPIO_NOPULL,GPIO_SPEED_FREQ_MEDIUM);
 
+	MPU6050_Init(&datas, GPIOC, GPIO_PIN_0, MPU6050_Device_0,MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
 
 	initTemplate();
 	Cardio_init();
@@ -77,9 +76,17 @@ int main(void)
 
 	int32_t updateGraphiqueCardiaque = HAL_GetTick();
 	int32_t updateTemp = HAL_GetTick();
+	int32_t updatePosition = HAL_GetTick();
 
 	while(1)
 	{
+		//Récupération des données
+
+		if (HAL_GetTick()>=updatePosition+50){
+			//MPU6050_ReadAll(&datas);
+			updatePosition = HAL_GetTick();
+		}
+
 
 		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
 			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);
@@ -97,6 +104,10 @@ int main(void)
 			updateTemp= HAL_GetTick();
 		}
 
+
+		//Traitement des données
+
+
 	}
 }
 
@@ -107,31 +118,5 @@ int16_t getAmpliResp(adc_id_e channel){
 	return input;
 }
 
-int16_t getValeurMoyenne(int16_t *signal, size_t taille) {
-    int32_t sum = 0;
-    for (size_t i = 0; i < taille; i++) {
-        sum += signal[i];
-    }
-    return (int16_t)(sum / taille);
-}
 
 
-int16_t getBPM(int16_t *tableau,int taille){
-
-	int16_t mean = getValeurMoyenne(tableau,taille);
-	int16_t tempsPic[2]= {0,0};
-	int16_t indexPic = 0;
-	for(int16_t index; ((index < taille - 10) || (indexPic==2)) ; index++){
-		if ((tableau[index] > mean + DELTAFM) && (tableau[index + 10] <= mean - DELTAFD)){
-			tempsPic[indexPic] = index;
-			indexPic++;
-			index +=10;
-		}
-	}
-
-	if(indexPic == 2) return (60000/((tempsPic[1]-tempsPic[0])*20));
-
-	//erreur calcul
-	return -1;
-
-}

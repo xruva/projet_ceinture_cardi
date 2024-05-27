@@ -13,6 +13,7 @@
 #define NUCLEO	1
 #define BLUEPILL 0
 
+
 //_______________________________________________________
 //Configuration des broches utilisées...
 //Ces macros permettent d'utiliser dans le code des noms explicites (LED_GREEN, ...)
@@ -69,7 +70,7 @@
 	#define USE_AN7			0	//Broche correspondante : PA7
 	#define USE_AN8			0	//Broche correspondante : PB0
 	#define USE_AN9			0	//Broche correspondante : PB1
-	#define USE_AN10		0	//Broche correspondante : PC0	//Sur la Bluepill, cette broche n'est pas câblée !
+	#define USE_AN10		1	//Broche correspondante : PC0	//Sur la Bluepill, cette broche n'est pas câblée !
 	#define USE_AN11		1	//Broche correspondante : PC1	//Sur la Bluepill, cette broche n'est pas câblée !
 	#define USE_AN12		0	//Broche correspondante : PC2	//Sur la Bluepill, cette broche n'est pas câblée !
 	#define USE_AN13		0	//Broche correspondante : PC3	//Sur la Bluepill, cette broche n'est pas câblée !
@@ -103,7 +104,7 @@
 #define USE_SENSOR_LSM6DS3		0//Accéléromètre et Gyroscope
 #define USE_SENSOR_LPS22HB		0//Pression (et température)
 #define USE_MLX90614			0	//Capteur de température sans contact
-#define USE_MPU6050				0//Accéléromètre et Gyroscope
+#define USE_MPU6050				1//Accéléromètre et Gyroscope
 
 #define USE_MATRIX_KEYBOARD		0
 #define USE_MATRIX_LED			0
