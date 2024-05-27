@@ -92,20 +92,3 @@ void printCardioGraphe(int16_t *tableau, int taille){
 	}
 	//if(countDown>(taille/2))stateHeart
 }
-
-void presence(int16_t *tableau, int taille){
-	switch(stateHeart){
-	//Trop loin ou personne
-	case 0 :
-		break;
-	//Quelqu'un + coeur bat
-	case 1 :
-		break;
-
-	//Quelqu'un + trop proche
-	case 2 :
-		break;
-	default :
-		break;
-	}
-}

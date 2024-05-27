@@ -25,7 +25,7 @@ float getTemp(adc_id_e channel){
     float tension = echantillonage / 4095.0 * 3.3;
 
     // Convertir la tension en température en degrés Celsius (sensibilité de 19,5 mV/°C)
-    float temperature = (tension) * 19.53;
+    float temperature = ((tension) * 19.53);
 
     return temperature;
 

@@ -1,6 +1,6 @@
 #include "stm32f1xx_hal.h"
 //#include "stm32f1xx_nucleo.h"
-//#include "stm32f1_uart.h"
+#include "stm32f1_uart.h"
 #include "stm32f1_sys.h"
 #include "macro_types.h"
 //#include "stm32f1_gpio.h"
@@ -25,12 +25,10 @@
 int16_t getAmpliResp(adc_id_e channel);
 
 int16_t cardiographe[TAILLE];
+char tabMsgErreur[5] = {"-1","-1","-1","-1","-1"};
 
 
-int Threshold = 2500;       // Determine which Signal to "count as a beat" and which to ignore.
-int Wait = 0;
-int Wait1 = 0;
-uint16_t static tututu = 0;
+
 MPU6050_t datas;
 
 
@@ -51,40 +49,35 @@ int main(void)
 	//"Indique que les printf sortent vers le p�riph�rique UART2."
 	SYS_set_std_usart(UART2_ID, UART2_ID, UART2_ID);
 
-	//Initialisation du port de la led Verte (carte Nucleo)
-	//BSP_GPIO_PinCfg(LED_GREEN_GPIO, LED_GREEN_PIN, GPIO_MODE_OUTPUT_PP,GPIO_NOPULL,GPIO_SPEED_FREQ_HIGH);
-
-
-	//Initialisation du port du bouton bleu (carte Nucleo)
-	//BSP_GPIO_PinCfg(BLUE_BUTTON_GPIO, BLUE_BUTTON_PIN, GPIO_MODE_INPUT,GPIO_PULLUP,GPIO_SPEED_FREQ_HIGH);
-
 
 	//Initialisation du port du pota en sortie Push-Pull
 	BSP_GPIO_PinCfg(POT_GPIO, POT_PIN, GPIO_MODE_INPUT,GPIO_NOPULL,GPIO_SPEED_FREQ_MEDIUM);
 
+	//Initialisation de la liaision I2C, ainsi que l'acc�l�rom�tre
 	MPU6050_Init(&datas, GPIOC, GPIO_PIN_0, MPU6050_Device_0,MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
+	//MPU6050_demo();
 
 	initTemplate();
 	Cardio_init();
 
 
 
-	//Initialisation de la liaision I2C, ainsi que l'acc�l�rom�tre
-	//MPU6050_Init(&datas, GPIOA, GPIO_PIN_0, MPU6050_Device_0, MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
 
 
 
 	int32_t updateGraphiqueCardiaque = HAL_GetTick();
 	int32_t updateTemp = HAL_GetTick();
 	int32_t updatePosition = HAL_GetTick();
+	int32_t updateDetectionChute = HAL_GetTick();
+	int16_t colorChute = ILI9341_COLOR_GREEN;
 
 	while(1)
 	{
 		//Récupération des données
-
-		if (HAL_GetTick()>=updatePosition+50){
-			//MPU6050_ReadAll(&datas);
+		if (HAL_GetTick()>=updatePosition+100){
+			MPU6050_ReadAll(&datas);
 			updatePosition = HAL_GetTick();
+			printf("Ax : %4d | Ay : %4d | Az : %4d\n",datas.Accelerometer_X,datas.Accelerometer_Y,datas.Accelerometer_Z);
 		}
 
 
@@ -107,7 +100,22 @@ int main(void)
 
 		//Traitement des données
 
+		//Detection de chute
+		if(((datas.Accelerometer_Y<2000) && (datas.Accelerometer_Y>-2000)) && ((datas.Accelerometer_Z<-2000) || (datas.Accelerometer_Z>2000))){
+			if((HAL_GetTick()>=updateDetectionChute+7000) && (colorChute != ILI9341_COLOR_RED)){
+				colorChute = ILI9341_COLOR_RED;
+				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
+				updateDetectionChute = HAL_GetTick();
+			}
+		}else{
+			if(colorChute!=ILI9341_COLOR_GREEN){
+				colorChute = ILI9341_COLOR_GREEN;
+				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
+			}
+			updateDetectionChute = HAL_GetTick();
+		}
 
+		//
 	}
 }
 
