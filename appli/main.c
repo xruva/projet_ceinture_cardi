@@ -18,6 +18,8 @@
 
 
 #define TAILLE 150
+#define NBMSG 4
+
 
 typedef enum {
     CHUTE,
@@ -34,11 +36,11 @@ StringAlerte msg;
 }dataAlerte;
 
 int16_t getAmpliResp(adc_id_e channel);
-void addMsg(dataAlerte *tabMsg, StringAlerte pMsg);
+void addMsg(int32_t temps, char* pMsg);
 int16_t cardiographe[TAILLE];
-dataAlerte tabMsgErreur[5];
+//dataAlerte tabMsgErreur[5];
 
-
+char tabMsg[NBMSG][20]={"                    ","                    ","                    ","                    "};
 
 MPU6050_t datas;
 
@@ -114,7 +116,7 @@ int main(void)
 				colorChute = ILI9341_COLOR_RED;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
 				updateDetectionChute = HAL_GetTick();
-				addMsg(tabMsgErreur, CHUTE);
+				addMsg(HAL_GetTick(),"Chute");
 			}
 		}else{
 			if(colorChute!=ILI9341_COLOR_GREEN){
@@ -135,12 +137,10 @@ int16_t getAmpliResp(adc_id_e channel){
 	return input;
 }
 
-void addMsg(dataAlerte *tabMsg, StringAlerte pMsg){
-	//static int16_t i = 0;
-	int32_t temps = HAL_GetTick();
-	dataAlerte tempon;
-	dataAlerte alerteActuelle;
-	alerteActuelle.msg = pMsg;
+void addMsg(int32_t temps, char* pMsg){
+	char newAlerte[20];
+	sprintf(newAlerte,"%s",pMsg);
+
 	//horodatage
     uint32_t total_seconds = temps / 1000;
     uint32_t seconds = total_seconds % 60;
@@ -148,18 +148,16 @@ void addMsg(dataAlerte *tabMsg, StringAlerte pMsg){
     uint32_t minutes = total_minutes % 60;
     uint32_t hours = total_minutes / 60;
 
-    alerteActuelle.heure = hours;
-    alerteActuelle.minute = minutes;
 
-	tempon = tabMsg[0];
-    for(int i = 4; i > 1 ;i--){
-    		tabMsg[i]= tabMsg[i-1];
+    for(int i = 0; i < NBMSG-1 ;i++){
+    	sprintf(tabMsg[i],"%s",tabMsg[i+1]);
+
     	}
-    tabMsg[1]=tempon;
+    sprintf(tabMsg[3],"%d h %d - %s",hours,minutes,pMsg);
 }
 
 void printMsg(dataAlerte *tabMsg){
-	//Afficher rectangke blanc
+	//Afficher rectangle blanc
 	for(int i = 0 ; i<5 ; i++){
 		//afficher heure et minute x, y-i*15
 		//afficher msg x1, y1-i*15
