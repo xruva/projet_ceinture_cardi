@@ -19,13 +19,24 @@
 
 #define TAILLE 150
 
+typedef enum {
+    CHUTE,
+    COEUR,
+	RESPI
 
+} StringAlerte;
 
+typedef struct{
+int32_t heure;
+int32_t minute;
+
+StringAlerte msg;
+}dataAlerte;
 
 int16_t getAmpliResp(adc_id_e channel);
-
+void addMsg(dataAlerte *tabMsg, StringAlerte pMsg);
 int16_t cardiographe[TAILLE];
-char tabMsgErreur[5] = {"-1","-1","-1","-1","-1"};
+dataAlerte tabMsgErreur[5];
 
 
 
@@ -82,10 +93,7 @@ int main(void)
 
 
 		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
-			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);
-			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
-			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
-			//tututu = ADC_getValue(ADC_POT);//getAmpliResp(ADC_POT);  //
+
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
 		}
@@ -106,6 +114,7 @@ int main(void)
 				colorChute = ILI9341_COLOR_RED;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
 				updateDetectionChute = HAL_GetTick();
+				addMsg(tabMsgErreur, CHUTE);
 			}
 		}else{
 			if(colorChute!=ILI9341_COLOR_GREEN){
@@ -126,5 +135,33 @@ int16_t getAmpliResp(adc_id_e channel){
 	return input;
 }
 
+void addMsg(dataAlerte *tabMsg, StringAlerte pMsg){
+	//static int16_t i = 0;
+	int32_t temps = HAL_GetTick();
+	dataAlerte tempon;
+	dataAlerte alerteActuelle;
+	alerteActuelle.msg = pMsg;
+	//horodatage
+    uint32_t total_seconds = temps / 1000;
+    uint32_t seconds = total_seconds % 60;
+    uint32_t total_minutes = total_seconds / 60;
+    uint32_t minutes = total_minutes % 60;
+    uint32_t hours = total_minutes / 60;
 
+    alerteActuelle.heure = hours;
+    alerteActuelle.minute = minutes;
 
+	tempon = tabMsg[0];
+    for(int i = 4; i > 1 ;i--){
+    		tabMsg[i]= tabMsg[i-1];
+    	}
+    tabMsg[1]=tempon;
+}
+
+void printMsg(dataAlerte *tabMsg){
+	//Afficher rectangke blanc
+	for(int i = 0 ; i<5 ; i++){
+		//afficher heure et minute x, y-i*15
+		//afficher msg x1, y1-i*15
+	}
+}
