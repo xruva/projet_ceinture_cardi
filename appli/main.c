@@ -37,10 +37,12 @@ StringAlerte msg;
 
 int16_t getAmpliResp(adc_id_e channel);
 void addMsg(int32_t temps, char* pMsg);
+void addRespi(void);
 int16_t cardiographe[TAILLE];
-//dataAlerte tabMsgErreur[5];
+int16_t aerographe[TAILLE];
 
-char tabMsg[NBMSG][20]={"                    ","                    ","                    ","                    "};
+
+char tabMsg[NBMSG][11]={"","","",""};//{"           ","           ","           ","           "};
 
 MPU6050_t datas;
 
@@ -82,6 +84,7 @@ int main(void)
 	int32_t updateTemp = HAL_GetTick();
 	int32_t updatePosition = HAL_GetTick();
 	int32_t updateDetectionChute = HAL_GetTick();
+	int32_t updateRespi = HAL_GetTick();
 	int16_t colorChute = ILI9341_COLOR_GREEN;
 
 	while(1)
@@ -90,7 +93,7 @@ int main(void)
 		if (HAL_GetTick()>=updatePosition+100){
 			MPU6050_ReadAll(&datas);
 			updatePosition = HAL_GetTick();
-			printf("Ax : %4d | Ay : %4d | Az : %4d\n",datas.Accelerometer_X,datas.Accelerometer_Y,datas.Accelerometer_Z);
+			//printf("Ax : %4d | Ay : %4d | Az : %4d || %d\n",datas.Accelerometer_X,datas.Accelerometer_Y,datas.Accelerometer_Z,HAL_GetTick());
 		}
 
 
@@ -98,8 +101,15 @@ int main(void)
 
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
+			//printf("%d\n",getAmpliResp(ADC_11));
 		}
 
+		if (HAL_GetTick()>=updateRespi+50){
+
+			addRespi();
+			updateRespi = HAL_GetTick();
+			printf("%d\n",getAmpliResp(ADC_POT));
+		}
 
 		if(HAL_GetTick()>=updateTemp+1000){
 			float temp = getTemp(ADC_TEMP);
@@ -149,11 +159,16 @@ void addMsg(int32_t temps, char* pMsg){
     uint32_t hours = total_minutes / 60;
 
 
-    for(int i = 0; i < NBMSG-1 ;i++){
-    	sprintf(tabMsg[i],"%s",tabMsg[i+1]);
+    for(int i = 0; i < NBMSG ;i++){
+    	if(i==3) sprintf(tabMsg[3],"%d h %d - %s",hours,minutes,pMsg);
+    	else sprintf(tabMsg[i],"%s",tabMsg[i+1]);
+    	ILI9341_Puts(200,140+(i*22), tabMsg[i], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
 
     	}
-    sprintf(tabMsg[3],"%d h %d - %s",hours,minutes,pMsg);
+	//ILI9341_Puts(200,140, "msg4", &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	//ILI9341_Puts(200,160, "msg3", &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	//ILI9341_Puts(200,180, "msg2", &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	//ILI9341_Puts(200,200, tabMsg[3], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
 }
 
 void printMsg(dataAlerte *tabMsg){
@@ -162,4 +177,29 @@ void printMsg(dataAlerte *tabMsg){
 		//afficher heure et minute x, y-i*15
 		//afficher msg x1, y1-i*15
 	}
+}
+
+void addRespi(void){
+	int static i = 0;
+	int16_t newValue = ADC_getValue(ADC_POT);
+	aerographe[i] = newValue;
+
+	    	i++;
+	    	if(i==TAILLE){
+	    		i=0;
+	    		ILI9341_DrawFilledRectangle(21,219,169,141,ILI9341_COLOR_WHITE);
+	    		uint16_t static yPrec = 219;
+	    		uint16_t static y = 219;
+	    		for(uint16_t i = 1; i < TAILLE-2; i+=2){
+
+	    				uint16_t x = 22+i;
+	    				yPrec = y;
+
+	    				uint16_t calibrageValeur = (uint16_t)(aerographe[i]*78/4095);
+	    				y = 219-calibrageValeur;
+	    				if(aerographe[i]!=-1) ILI9341_DrawLine((x==1)?0:x-2, yPrec, x, y, ILI9341_COLOR_BLUE);
+
+
+	    			}
+	    	}
 }
