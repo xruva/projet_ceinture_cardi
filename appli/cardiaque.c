@@ -38,7 +38,7 @@ void Cardio_init(void)
 void addValue(int16_t *tableau,int taille,adc_id_e channel){
 	int static i = 0;
 	int16_t newValue = ADC_getValue(channel);
-
+	//printf("1");
 
 	if(newValue < MIN_Plage){
 		newValue = 0;
@@ -47,14 +47,17 @@ void addValue(int16_t *tableau,int taille,adc_id_e channel){
 	}else {
 		newValue -= MIN_Plage;
 	}
+	//Delay_ms(10);
+	//printf("2");
 
     	tableau[i] = newValue;
 
     	i++;
     	if(i==taille){
     		i=0;
+    		//printf("3");
+
     		getValeurMoyenne(tableau,taille);
-    		//recentreSignal(tableau,taille);
     		printCardioGraphe(tableau,taille);
     		writeBPM(getBPM(tableau,taille));
     	}
@@ -103,7 +106,7 @@ void getBPM(int16_t *tableau,int16_t taille){
 
 	int16_t tempsPic[2]= {0,0};
 	int16_t indexPic = 0;
-	for(int16_t index; ((index < taille - 10) || (indexPic==2)) ; index++){
+	for(int16_t index; ((index < taille - 11) && (indexPic<2)) ; index++){
 		if ((tableau[index] > sig.moy + DELTAFM) && (tableau[index + 10] <= sig.moy - DELTAFD)){
 			tempsPic[indexPic] = index;
 			indexPic++;
@@ -136,4 +139,12 @@ void recentreSignal(int16_t *tableau,int16_t taille){
 
 	printCardioGraphe(new_signal, taille);
 
+}
+
+bool checkVariation(int16_t *tableau, int16_t taille, int16_t delta){
+	bool result = true;
+	for(int16_t i = 0 ; i < taille ; i++){
+		result &=((tableau[i]<sig.moy+delta) && (tableau[i]>sig.moy-delta));
+	}
+	return result;
 }

@@ -36,13 +36,13 @@ StringAlerte msg;
 }dataAlerte;
 
 int16_t getAmpliResp(adc_id_e channel);
-void addMsg(int32_t temps, char* pMsg);
+void addMsg(char* pMsg);
 void addRespi(void);
 int16_t cardiographe[TAILLE];
 int16_t aerographe[TAILLE];
 
 
-char tabMsg[NBMSG][11]={"","","",""};//{"           ","           ","           ","           "};
+char tabMsg[NBMSG][20]={"","","",""};//{"           ","           ","           ","           "};
 
 MPU6050_t datas;
 
@@ -55,6 +55,7 @@ int main(void)
 	HAL_Init();
 
 	ADC_init();
+	RTC_init(FALSE);
 
 	//Initialisation de l'UART2 � la vitesse de 115200 bauds/secondes (92kbits/s) PA2 : Tx  | PA3 : Rx.
 		//Attention, les pins PA2 et PA3 ne sont pas reli�es jusqu'au connecteur de la Nucleo.
@@ -90,25 +91,26 @@ int main(void)
 	while(1)
 	{
 		//Récupération des données
+
 		if (HAL_GetTick()>=updatePosition+100){
 			MPU6050_ReadAll(&datas);
 			updatePosition = HAL_GetTick();
 			//printf("Ax : %4d | Ay : %4d | Az : %4d || %d\n",datas.Accelerometer_X,datas.Accelerometer_Y,datas.Accelerometer_Z,HAL_GetTick());
 		}
 
-
+///*
 		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
 
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
 			//printf("%d\n",getAmpliResp(ADC_11));
-		}
+		}//*/
 
 		if (HAL_GetTick()>=updateRespi+50){
 
 			addRespi();
 			updateRespi = HAL_GetTick();
-			printf("%d\n",getAmpliResp(ADC_POT));
+			//printf("%d\n",getAmpliResp(ADC_POT));
 		}
 
 		if(HAL_GetTick()>=updateTemp+1000){
@@ -119,24 +121,26 @@ int main(void)
 
 
 		//Traitement des données
-
+///*
 		//Detection de chute
 		if(((datas.Accelerometer_Y<2000) && (datas.Accelerometer_Y>-2000)) && ((datas.Accelerometer_Z<-2000) || (datas.Accelerometer_Z>2000))){
 			if((HAL_GetTick()>=updateDetectionChute+7000) && (colorChute != ILI9341_COLOR_RED)){
 				colorChute = ILI9341_COLOR_RED;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
+				addMsg("Chute");
 				updateDetectionChute = HAL_GetTick();
-				addMsg(HAL_GetTick(),"Chute");
+
 			}
 		}else{
 			if(colorChute!=ILI9341_COLOR_GREEN){
 				colorChute = ILI9341_COLOR_GREEN;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
-			}
-			updateDetectionChute = HAL_GetTick();
+
+			}else updateDetectionChute = HAL_GetTick();
+
 		}
 
-		//
+		//*/
 	}
 }
 
@@ -147,28 +151,20 @@ int16_t getAmpliResp(adc_id_e channel){
 	return input;
 }
 
-void addMsg(int32_t temps, char* pMsg){
+void addMsg(char* pMsg){
 	char newAlerte[20];
 	sprintf(newAlerte,"%s",pMsg);
-
-	//horodatage
-    uint32_t total_seconds = temps / 1000;
-    uint32_t seconds = total_seconds % 60;
-    uint32_t total_minutes = total_seconds / 60;
-    uint32_t minutes = total_minutes % 60;
-    uint32_t hours = total_minutes / 60;
+	//RTC_TimeTypeDef temps;
 
 
+	//RTC_get_time(temps);
     for(int i = 0; i < NBMSG ;i++){
-    	if(i==3) sprintf(tabMsg[3],"%d h %d - %s",hours,minutes,pMsg);
+    	if(i==3) sprintf(tabMsg[3],"%s",pMsg);//%2d m %2d - temps.Minutes,temps.Seconds,
     	else sprintf(tabMsg[i],"%s",tabMsg[i+1]);
     	ILI9341_Puts(200,140+(i*22), tabMsg[i], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
-
     	}
-	//ILI9341_Puts(200,140, "msg4", &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
-	//ILI9341_Puts(200,160, "msg3", &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
-	//ILI9341_Puts(200,180, "msg2", &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
-	//ILI9341_Puts(200,200, tabMsg[3], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	//printf("toto -> %2d ",temps.Minutes);
+
 }
 
 void printMsg(dataAlerte *tabMsg){
