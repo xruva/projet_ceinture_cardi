@@ -6,9 +6,12 @@
 //#include "stm32f1_gpio.h"
 #include "stm32f1_adc.h"
 #include "MPU6050/stm32f1_mpu6050.h"
+#include "stm32f1_rtc.h"
 #include "affichageTFT.h"
 #include "mpc9701.h"
 #include "cardiaque.h"
+#include <stdio.h>
+#include <math.h>
 
 //Pota
 #define POT_GPIO				GPIOC
@@ -19,7 +22,7 @@
 
 #define TAILLE 150
 #define NBMSG 4
-
+#define TAILLEMSG 20 //doit être un multiple de 4
 
 typedef enum {
     CHUTE,
@@ -38,11 +41,13 @@ StringAlerte msg;
 int16_t getAmpliResp(adc_id_e channel);
 void addMsg(char* pMsg);
 void addRespi(void);
+void setMsgFlash(void);
+void getMsgFlash(void);
 int16_t cardiographe[TAILLE];
 int16_t aerographe[TAILLE];
 
 
-char tabMsg[NBMSG][20]={"","","",""};//{"           ","           ","           ","           "};
+char tabMsg[NBMSG][TAILLEMSG]={"","","",""};//{"           ","           ","           ","           "};
 
 MPU6050_t datas;
 
@@ -55,7 +60,7 @@ int main(void)
 	HAL_Init();
 
 	ADC_init();
-	RTC_init(FALSE);
+	//RTC_init(FALSE);
 
 	//Initialisation de l'UART2 � la vitesse de 115200 bauds/secondes (92kbits/s) PA2 : Tx  | PA3 : Rx.
 		//Attention, les pins PA2 et PA3 ne sont pas reli�es jusqu'au connecteur de la Nucleo.
@@ -75,7 +80,12 @@ int main(void)
 
 	initTemplate();
 	Cardio_init();
-
+	//Delay_ms(1000);
+	getMsgFlash();
+	ILI9341_Puts(200,140, tabMsg[0], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	ILI9341_Puts(200,140+(22), tabMsg[1], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	ILI9341_Puts(200,140+(44), tabMsg[2], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	ILI9341_Puts(200,140+(33), tabMsg[3], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
 
 
 
@@ -110,7 +120,8 @@ int main(void)
 
 			addRespi();
 			updateRespi = HAL_GetTick();
-			//printf("%d\n",getAmpliResp(ADC_POT));
+			for(int16_t i =0 ; i<255;i++) printf("%d\n",FLASH_read_word(i));
+			printf("fin !");
 		}
 
 		if(HAL_GetTick()>=updateTemp+1000){
@@ -127,8 +138,9 @@ int main(void)
 			if((HAL_GetTick()>=updateDetectionChute+7000) && (colorChute != ILI9341_COLOR_RED)){
 				colorChute = ILI9341_COLOR_RED;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
-				addMsg("Chute");
-				updateDetectionChute = HAL_GetTick();
+				addMsg("chute");
+				//updateDetectionChute = HAL_GetTick();
+				setMsgFlash();
 
 			}
 		}else{
@@ -136,7 +148,8 @@ int main(void)
 				colorChute = ILI9341_COLOR_GREEN;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
 
-			}else updateDetectionChute = HAL_GetTick();
+			}
+			updateDetectionChute = HAL_GetTick();
 
 		}
 
@@ -162,19 +175,56 @@ void addMsg(char* pMsg){
     	if(i==3) sprintf(tabMsg[3],"%s",pMsg);//%2d m %2d - temps.Minutes,temps.Seconds,
     	else sprintf(tabMsg[i],"%s",tabMsg[i+1]);
     	ILI9341_Puts(200,140+(i*22), tabMsg[i], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
-    	}
+
+    }
+
 	//printf("toto -> %2d ",temps.Minutes);
 
 }
 
-void printMsg(dataAlerte *tabMsg){
-	//Afficher rectangle blanc
-	for(int i = 0 ; i<5 ; i++){
-		//afficher heure et minute x, y-i*15
-		//afficher msg x1, y1-i*15
+
+void setMsgFlash(void){
+	int32_t compression = 0x0;
+	//FLASH_set_word(1,1324);
+	//FLASH_set_word(3,24);
+
+	for(int8_t i = 0 ; i < NBMSG ; i++){
+		for(int8_t j = 0 ; j < TAILLEMSG ; j++){
+			double result = (double)j / 4;
+			double intPart;
+			printf("%c,  %d	",tabMsg[i][j],(int32_t)((modf(result, &intPart)*32)));
+			compression |= (int32_t)tabMsg[i][j] << (int32_t)((modf(result, &intPart)*32));
+			printf("%x\n",compression);
+			//result |= (int32_t)chars[0] << 24;
+		    //result |= (int32_t)chars[1] << 16;
+		    //result |= (int32_t)chars[2] << 8;
+		    //result |= (int32_t)chars[3];
+			if((j+1)%4==0){
+				FLASH_set_word((j/4)+(i*TAILLEMSG),compression);
+				printf("	%c\n",compression);
+				compression = 0x0;
+			}
+		}
 	}
+	printf("-----\n");
 }
 
+void getMsgFlash(void){
+	int32_t decompression = 0x0;
+
+	for(int8_t i = 0 ; i < NBMSG ; i++){
+		for(int8_t j = 0 ; j < TAILLEMSG ; j++){
+			double result = (double)j / 4;
+			double intPart;
+			if((j+1)%4==0) decompression = FLASH_read_word(j/4+(i*TAILLEMSG/4));
+			printf("%d\n",decompression);
+			if(decompression==-1) exit;
+			char tempon = (char)((decompression >> (int32_t)((modf(result, &intPart)*32))) & 0xFF);
+			//sprintf(tabMsg[NBMSG-i][j],"%c",tempon);
+			tabMsg[NBMSG-i][j] = tempon;
+		}
+	}
+}
 void addRespi(void){
 	int static i = 0;
 	int16_t newValue = ADC_getValue(ADC_POT);

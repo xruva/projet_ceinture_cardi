@@ -16,6 +16,8 @@ void Cardio_init(void);
 void updateRingBuffer(int16_t *tableau,int taille,adc_id_e channel);
 void addValue(int16_t *tableau,int taille,adc_id_e channel);
 void getValeurMoyenne(int16_t *signal, int16_t taille);
+int8_t checkVariation(int16_t *tableau, int16_t taille, int16_t delta);
+
 
 void getBPM(int16_t *tableau,int16_t taille);
 void recentreSignal(int16_t *tableau,int16_t taille);

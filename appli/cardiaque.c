@@ -141,10 +141,10 @@ void recentreSignal(int16_t *tableau,int16_t taille){
 
 }
 
-bool checkVariation(int16_t *tableau, int16_t taille, int16_t delta){
-	bool result = true;
+int8_t checkVariation(int16_t *tableau, int16_t taille, int16_t delta){
+	int8_t result = 1;
 	for(int16_t i = 0 ; i < taille ; i++){
-		result &=((tableau[i]<sig.moy+delta) && (tableau[i]>sig.moy-delta));
+		result *=((tableau[i]<sig.moy+delta) && (tableau[i]>sig.moy-delta));
 	}
 	return result;
 }

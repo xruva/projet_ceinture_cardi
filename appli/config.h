@@ -91,7 +91,7 @@
 
 
 #define USE_SCREEN_LCD2X16			0	//Ecran LCD 2x16
-
+#define USE_INTERNAL_FLASH_AS_EEPROM 1
 #define USE_TFT_PCD8544				0	//Ecran TFT Nokia
 
 //Carte capteur IKS01A1 :

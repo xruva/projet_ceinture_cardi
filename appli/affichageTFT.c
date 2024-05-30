@@ -1,7 +1,7 @@
 
 #include "affichageTFT.h"
-uint16_t MAX_Plage = 4095;
-uint16_t MIN_Plage = 2000;
+uint16_t MAX_Plage = 3700;
+uint16_t MIN_Plage = 2200;
 
 int stateHeart = 0;
 void initTemplate(void){
