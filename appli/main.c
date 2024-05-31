@@ -85,7 +85,7 @@ int main(void)
 	ILI9341_Puts(200,140, tabMsg[0], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
 	ILI9341_Puts(200,140+(22), tabMsg[1], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
 	ILI9341_Puts(200,140+(44), tabMsg[2], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
-	ILI9341_Puts(200,140+(33), tabMsg[3], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
+	ILI9341_Puts(200,140+(66), tabMsg[3], &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE);
 
 
 
@@ -96,7 +96,7 @@ int main(void)
 	int32_t updatePosition = HAL_GetTick();
 	int32_t updateDetectionChute = HAL_GetTick();
 	int32_t updateRespi = HAL_GetTick();
-	int16_t colorChute = ILI9341_COLOR_GREEN;
+	int32_t colorChute = ILI9341_COLOR_GREEN;
 
 	while(1)
 	{
@@ -138,7 +138,7 @@ int main(void)
 			if((HAL_GetTick()>=updateDetectionChute+7000) && (colorChute != ILI9341_COLOR_RED)){
 				colorChute = ILI9341_COLOR_RED;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
-				addMsg("chute");
+				addMsg("chute4");
 				//updateDetectionChute = HAL_GetTick();
 				setMsgFlash();
 
@@ -210,20 +210,44 @@ void setMsgFlash(void){
 }
 
 void getMsgFlash(void){
-	int32_t decompression = 0x0;
+	int32_t decompression;
+	//char tempon = (char)((decompression >> (int32_t)((modf(result, &intPart)*32))) & 0xFF);
 
 	for(int8_t i = 0 ; i < NBMSG ; i++){
 		for(int8_t j = 0 ; j < TAILLEMSG ; j++){
 			double result = (double)j / 4;
 			double intPart;
+
+			if(j%4==0) decompression = FLASH_read_word((i*TAILLEMSG)+j/4);
+		    tabMsg[i][j] = (char)((decompression >> (int32_t)((modf(result, &intPart)*32))) & 0xFF);
+
+		}
+	}/*
+    // Extraire chaque octet du nombre
+    tabMsg[3][0] = (char)((decompression >> 0) & 0xFF);
+    tabMsg[3][1] = (char)((decompression >> 8) & 0xFF);
+    tabMsg[3][2] = (char)((decompression >> 16) & 0xFF);
+    tabMsg[3][3] = (char)((decompression >>24) & 0xFF);
+    tabMsg[3][4] = 'e';
+    tabMsg[3][5] = '\0';
+	/*for(int8_t i = 0 ; i < NBMSG ; i++){
+		for(int8_t j = 0 ; j < TAILLEMSG ; j++){
+			double result = (double)j / 4;
+			double intPart;
+
 			if((j+1)%4==0) decompression = FLASH_read_word(j/4+(i*TAILLEMSG/4));
 			printf("%d\n",decompression);
-			if(decompression==-1) exit;
-			char tempon = (char)((decompression >> (int32_t)((modf(result, &intPart)*32))) & 0xFF);
-			//sprintf(tabMsg[NBMSG-i][j],"%c",tempon);
-			tabMsg[NBMSG-i][j] = tempon;
+
+			//if(decompression!=-1){
+				char tempon = (char)((decompression >> (int32_t)((modf(result, &intPart)*32))) & 0xFF);
+				//sprintf(tabMsg[NBMSG-i][j],"%s",tempon);
+				printf("temp : %s  - %d,%d _",tempon,i,j);
+				tabMsg[NBMSG-i][j] = tempon;
+			//}
+
 		}
-	}
+		tabMsg[i][TAILLEMSG-1]="\0";
+	}*/
 }
 void addRespi(void){
 	int static i = 0;
