@@ -21,7 +21,7 @@ int16_t new_signal[150];
 
 typedef struct {
     int16_t max;
-    int16_t moy;
+    int32_t moy;
     int16_t min;
     int16_t bpm;
 } Signal;
@@ -92,7 +92,7 @@ void updateRingBuffer(int16_t *tableau,int taille,adc_id_e channel) {
 void getValeurMoyenne(int16_t *signal, int16_t taille) {
     sig.max = signal[0];
     sig.min = signal[0];
-    int32_t sum = 0;
+    uint32_t sum = 0;
 
     for (int16_t i = 0; i < taille; i++) {
         if (signal[i] > sig.max) sig.max = signal[i];
@@ -100,6 +100,7 @@ void getValeurMoyenne(int16_t *signal, int16_t taille) {
         sum += signal[i];
     }
     sig.moy = (int16_t)(sum / taille);
+    printf("moy %d \n", sig.moy);
 }
 
 void getBPM(int16_t *tableau,int16_t taille){
@@ -141,10 +142,17 @@ void recentreSignal(int16_t *tableau,int16_t taille){
 
 }
 
+//retourne 0 si il y a une variation
 int8_t checkVariation(int16_t *tableau, int16_t taille, int16_t delta){
-	int8_t result = 1;
+	int32_t result = 0;
 	for(int16_t i = 0 ; i < taille ; i++){
-		result *=((tableau[i]<sig.moy+delta) && (tableau[i]>sig.moy-delta));
+		if((tableau[i]<sig.moy+delta) && (tableau[i]>sig.moy-delta)){
+			result +=1;
+		}
 	}
-	return result;
+	printf("%d => %d\n",result,(int32_t)(4*taille/5));
+
+	if(result>=(int32_t)(4*taille/5)) return 0;
+	return 1;
+
 }

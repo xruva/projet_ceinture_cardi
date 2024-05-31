@@ -18,25 +18,16 @@
 #define POT_PIN					GPIO_PIN_1
 #define ADC_POT ADC_11
 
-
+//Bouton
+#define BP_GPIO					GPIOB
+#define BP_PIN					GPIO_PIN_12
 
 #define TAILLE 150
 #define NBMSG 4
 #define TAILLEMSG 20 //doit être un multiple de 4
 
-typedef enum {
-    CHUTE,
-    COEUR,
-	RESPI
 
-} StringAlerte;
 
-typedef struct{
-int32_t heure;
-int32_t minute;
-
-StringAlerte msg;
-}dataAlerte;
 
 int16_t getAmpliResp(adc_id_e channel);
 void addMsg(char* pMsg);
@@ -47,10 +38,9 @@ int16_t cardiographe[TAILLE];
 int16_t aerographe[TAILLE];
 
 
-char tabMsg[NBMSG][TAILLEMSG]={"","","",""};//{"           ","           ","           ","           "};
-
+char tabMsg[NBMSG][TAILLEMSG]={"","","",""};
 MPU6050_t datas;
-
+int8_t static flagVM =0;
 
 int main(void)
 {
@@ -73,6 +63,8 @@ int main(void)
 
 	//Initialisation du port du pota en sortie Push-Pull
 	BSP_GPIO_PinCfg(POT_GPIO, POT_PIN, GPIO_MODE_INPUT,GPIO_NOPULL,GPIO_SPEED_FREQ_MEDIUM);
+
+	BSP_GPIO_PinCfg(BP_GPIO, BP_PIN, GPIO_MODE_INPUT,GPIO_PULLDOWN,GPIO_SPEED_FREQ_MEDIUM);
 
 	//Initialisation de la liaision I2C, ainsi que l'acc�l�rom�tre
 	MPU6050_Init(&datas, GPIOC, GPIO_PIN_0, MPU6050_Device_0,MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
@@ -97,10 +89,24 @@ int main(void)
 	int32_t updateDetectionChute = HAL_GetTick();
 	int32_t updateRespi = HAL_GetTick();
 	int32_t colorChute = ILI9341_COLOR_GREEN;
+	int32_t updateDetectionApnee = HAL_GetTick();
+	int8_t attenteChangement =0;
+
+	int8_t flagStart =0;
+/*
+	while(!flagStart){
+		if(HAL_GPIO_ReadPin(BP_GPIO,BP_PIN)) flagStart=1;
+	}*/
 
 	while(1)
 	{
-		//Récupération des données
+
+
+
+//-------------------------------------------------Récupération des données-------------------------------------------------
+
+
+
 
 		if (HAL_GetTick()>=updatePosition+100){
 			MPU6050_ReadAll(&datas);
@@ -108,20 +114,20 @@ int main(void)
 			//printf("Ax : %4d | Ay : %4d | Az : %4d || %d\n",datas.Accelerometer_X,datas.Accelerometer_Y,datas.Accelerometer_Z,HAL_GetTick());
 		}
 
-///*
-		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
+
+		if (HAL_GetTick()>=updateGraphiqueCardiaque+10){
 
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
 			//printf("%d\n",getAmpliResp(ADC_11));
-		}//*/
+		}
 
 		if (HAL_GetTick()>=updateRespi+50){
 
 			addRespi();
 			updateRespi = HAL_GetTick();
-			for(int16_t i =0 ; i<255;i++) printf("%d\n",FLASH_read_word(i));
-			printf("fin !");
+			//for(int16_t i =0 ; i<255;i++) printf("%d\n",FLASH_read_word(i));
+			//printf("fin !");
 		}
 
 		if(HAL_GetTick()>=updateTemp+1000){
@@ -131,15 +137,17 @@ int main(void)
 		}
 
 
-		//Traitement des données
-///*
-		//Detection de chute
+//-------------------------------------------------Traitement des données-------------------------------------------------
+
+
+		//		Detection de chute
+
+
 		if(((datas.Accelerometer_Y<2000) && (datas.Accelerometer_Y>-2000)) && ((datas.Accelerometer_Z<-2000) || (datas.Accelerometer_Z>2000))){
 			if((HAL_GetTick()>=updateDetectionChute+7000) && (colorChute != ILI9341_COLOR_RED)){
 				colorChute = ILI9341_COLOR_RED;
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
-				addMsg("chute4");
-				//updateDetectionChute = HAL_GetTick();
+				addMsg("Alerte chute");
 				setMsgFlash();
 
 			}
@@ -153,7 +161,30 @@ int main(void)
 
 		}
 
-		//*/
+
+		//		Detection d'apnée
+
+		if(flagVM!=0){
+			//printf("%d & %d & %d \n",checkVariation(aerographe, TAILLE, 100),HAL_GetTick() >= updateDetectionApnee+3000,attenteChangement);
+
+			if((checkVariation(aerographe, TAILLE, 100)==0)
+					&& (HAL_GetTick() >= updateDetectionApnee+3000)
+					&& (!attenteChangement)){
+				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
+				addMsg("Alerte apnee");
+				attenteChangement =1;
+				setMsgFlash();
+
+			}else if((checkVariation(aerographe, TAILLE, 100)!=0)){
+				updateDetectionApnee = HAL_GetTick();
+				attenteChangement =0;
+				printf("reset timer\n");
+			}
+			flagVM=0;
+		}
+
+
+
 	}
 }
 
@@ -192,21 +223,21 @@ void setMsgFlash(void){
 		for(int8_t j = 0 ; j < TAILLEMSG ; j++){
 			double result = (double)j / 4;
 			double intPart;
-			printf("%c,  %d	",tabMsg[i][j],(int32_t)((modf(result, &intPart)*32)));
+			//printf("%c,  %d	",tabMsg[i][j],(int32_t)((modf(result, &intPart)*32)));
 			compression |= (int32_t)tabMsg[i][j] << (int32_t)((modf(result, &intPart)*32));
-			printf("%x\n",compression);
+			//printf("%x\n",compression);
 			//result |= (int32_t)chars[0] << 24;
 		    //result |= (int32_t)chars[1] << 16;
 		    //result |= (int32_t)chars[2] << 8;
 		    //result |= (int32_t)chars[3];
 			if((j+1)%4==0){
 				FLASH_set_word((j/4)+(i*TAILLEMSG),compression);
-				printf("	%c\n",compression);
+				//printf("	%c\n",compression);
 				compression = 0x0;
 			}
 		}
 	}
-	printf("-----\n");
+	//printf("-----\n");
 }
 
 void getMsgFlash(void){
@@ -222,54 +253,31 @@ void getMsgFlash(void){
 		    tabMsg[i][j] = (char)((decompression >> (int32_t)((modf(result, &intPart)*32))) & 0xFF);
 
 		}
-	}/*
-    // Extraire chaque octet du nombre
-    tabMsg[3][0] = (char)((decompression >> 0) & 0xFF);
-    tabMsg[3][1] = (char)((decompression >> 8) & 0xFF);
-    tabMsg[3][2] = (char)((decompression >> 16) & 0xFF);
-    tabMsg[3][3] = (char)((decompression >>24) & 0xFF);
-    tabMsg[3][4] = 'e';
-    tabMsg[3][5] = '\0';
-	/*for(int8_t i = 0 ; i < NBMSG ; i++){
-		for(int8_t j = 0 ; j < TAILLEMSG ; j++){
-			double result = (double)j / 4;
-			double intPart;
-
-			if((j+1)%4==0) decompression = FLASH_read_word(j/4+(i*TAILLEMSG/4));
-			printf("%d\n",decompression);
-
-			//if(decompression!=-1){
-				char tempon = (char)((decompression >> (int32_t)((modf(result, &intPart)*32))) & 0xFF);
-				//sprintf(tabMsg[NBMSG-i][j],"%s",tempon);
-				printf("temp : %s  - %d,%d _",tempon,i,j);
-				tabMsg[NBMSG-i][j] = tempon;
-			//}
-
-		}
-		tabMsg[i][TAILLEMSG-1]="\0";
-	}*/
+	}
 }
+
 void addRespi(void){
 	int static i = 0;
 	int16_t newValue = ADC_getValue(ADC_POT);
 	aerographe[i] = newValue;
 
-	    	i++;
-	    	if(i==TAILLE){
-	    		i=0;
-	    		ILI9341_DrawFilledRectangle(21,219,169,141,ILI9341_COLOR_WHITE);
-	    		uint16_t static yPrec = 219;
-	    		uint16_t static y = 219;
-	    		for(uint16_t i = 1; i < TAILLE-2; i+=2){
+	i++;
+	if(i==TAILLE){
+		i=0;
+		ILI9341_DrawFilledRectangle(21,219,169,141,ILI9341_COLOR_WHITE);
+		uint16_t static yPrec = 219;
+		uint16_t static y = 219;
+		for(uint16_t i = 1; i < TAILLE-2; i+=2){
 
-	    				uint16_t x = 22+i;
-	    				yPrec = y;
+				uint16_t x = 22+i;
+				yPrec = y;
 
-	    				uint16_t calibrageValeur = (uint16_t)(aerographe[i]*78/4095);
-	    				y = 219-calibrageValeur;
-	    				if(aerographe[i]!=-1) ILI9341_DrawLine((x==1)?0:x-2, yPrec, x, y, ILI9341_COLOR_BLUE);
+				uint16_t calibrageValeur = (uint16_t)(aerographe[i]*78/4095);
+				y = 219-calibrageValeur;
+				if(aerographe[i]!=-1) ILI9341_DrawLine((x==1)?0:x-2, yPrec, x, y, ILI9341_COLOR_BLUE);
 
-
-	    			}
-	    	}
+				getValeurMoyenne(aerographe,TAILLE);
+				flagVM = 1;
+		}
+	}
 }
