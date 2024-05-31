@@ -10,6 +10,8 @@
 #include "affichageTFT.h"
 #include "mpc9701.h"
 #include "cardiaque.h"
+#include "respiration.h"
+
 #include <stdio.h>
 #include <math.h>
 
@@ -29,9 +31,9 @@
 
 
 
-int16_t getAmpliResp(adc_id_e channel);
+
 void addMsg(char* pMsg);
-void addRespi(void);
+//void addRespi(void);
 void setMsgFlash(void);
 void getMsgFlash(void);
 int16_t cardiographe[TAILLE];
@@ -40,7 +42,7 @@ int16_t aerographe[TAILLE];
 
 char tabMsg[NBMSG][TAILLEMSG]={"","","",""};
 MPU6050_t datas;
-int8_t static flagVM =0;
+
 
 int main(void)
 {
@@ -93,10 +95,12 @@ int main(void)
 	int8_t attenteChangement =0;
 
 	int8_t flagStart =0;
-/*
+
 	while(!flagStart){
 		if(HAL_GPIO_ReadPin(BP_GPIO,BP_PIN)) flagStart=1;
-	}*/
+		for(int16_t i =0 ; i<255;i++) printf("%d\n",FLASH_read_word(i));
+		printf("fin !");
+	}
 
 	while(1)
 	{
@@ -115,7 +119,7 @@ int main(void)
 		}
 
 
-		if (HAL_GetTick()>=updateGraphiqueCardiaque+10){
+		if (HAL_GetTick()>=updateGraphiqueCardiaque+20){
 
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
@@ -124,7 +128,7 @@ int main(void)
 
 		if (HAL_GetTick()>=updateRespi+50){
 
-			addRespi();
+			addRespi(aerographe,TAILLE,ADC_POT);
 			updateRespi = HAL_GetTick();
 			//for(int16_t i =0 ; i<255;i++) printf("%d\n",FLASH_read_word(i));
 			//printf("fin !");
@@ -171,7 +175,7 @@ int main(void)
 					&& (HAL_GetTick() >= updateDetectionApnee+3000)
 					&& (!attenteChangement)){
 				ILI9341_DrawFilledRectangle(271,21,299,49,colorChute);
-				addMsg("Alerte apnee");
+				addMsg("Alerte respi");
 				attenteChangement =1;
 				setMsgFlash();
 
@@ -189,11 +193,8 @@ int main(void)
 }
 
 
-int16_t getAmpliResp(adc_id_e channel){
-	int16_t input = ADC_getValue(channel);
 
-	return input;
-}
+//--------------fonctions--------------
 
 void addMsg(char* pMsg){
 	char newAlerte[20];
@@ -255,7 +256,7 @@ void getMsgFlash(void){
 		}
 	}
 }
-
+/*
 void addRespi(void){
 	int static i = 0;
 	int16_t newValue = ADC_getValue(ADC_POT);
@@ -281,3 +282,11 @@ void addRespi(void){
 		}
 	}
 }
+
+int16_t getAmpliResp(adc_id_e channel){
+	int16_t input = ADC_getValue(channel);
+
+	return input;
+}
+
+*/

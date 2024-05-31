@@ -5,7 +5,7 @@
  *      Author: vauraudren
  */
 #include "affichageTFT.h"
-
+#include "cardiaque.h"
 //Cardio
 #define CAR_GPIO				GPIOA
 #define CAR_PIN					GPIO_PIN_0
@@ -57,9 +57,9 @@ void addValue(int16_t *tableau,int taille,adc_id_e channel){
     		i=0;
     		//printf("3");
 
-    		getValeurMoyenne(tableau,taille);
+    		//getValeurMoyenne(tableau,taille);
     		printCardioGraphe(tableau,taille);
-    		writeBPM(getBPM(tableau,taille));
+    		//writeBPM(getBPM(tableau,taille));
     	}
 
 
@@ -100,7 +100,7 @@ void getValeurMoyenne(int16_t *signal, int16_t taille) {
         sum += signal[i];
     }
     sig.moy = (int16_t)(sum / taille);
-    printf("moy %d \n", sig.moy);
+    //printf("moy %d \n", sig.moy);
 }
 
 void getBPM(int16_t *tableau,int16_t taille){
@@ -117,7 +117,7 @@ void getBPM(int16_t *tableau,int16_t taille){
 
 	if(indexPic == 2) sig.bpm = (int16_t)(60000/((tempsPic[1]-tempsPic[0])*20));
 	else sig.bpm = -1;
-
+	printf("ouiBPM\n");
 }
 
 void recentreSignal(int16_t *tableau,int16_t taille){
