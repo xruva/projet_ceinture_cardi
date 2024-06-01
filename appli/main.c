@@ -16,8 +16,8 @@
 #include <math.h>
 
 //Pota
-#define POT_GPIO				GPIOC
-#define POT_PIN					GPIO_PIN_1
+#define POT_GPIO				GPIOA
+#define POT_PIN					GPIO_PIN_4
 #define ADC_POT ADC_11
 
 //Bouton
@@ -69,7 +69,7 @@ int main(void)
 	BSP_GPIO_PinCfg(BP_GPIO, BP_PIN, GPIO_MODE_INPUT,GPIO_PULLDOWN,GPIO_SPEED_FREQ_MEDIUM);
 
 	//Initialisation de la liaision I2C, ainsi que l'acc�l�rom�tre
-	MPU6050_Init(&datas, GPIOC, GPIO_PIN_0, MPU6050_Device_0,MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
+	MPU6050_Init(&datas, GPIOA, GPIO_PIN_5, MPU6050_Device_0,MPU6050_Accelerometer_8G, MPU6050_Gyroscope_2000s);
 	//MPU6050_demo();
 
 	initTemplate();
@@ -115,7 +115,6 @@ int main(void)
 		if (HAL_GetTick()>=updatePosition+100){
 			MPU6050_ReadAll(&datas);
 			updatePosition = HAL_GetTick();
-			//printf("Ax : %4d | Ay : %4d | Az : %4d || %d\n",datas.Accelerometer_X,datas.Accelerometer_Y,datas.Accelerometer_Z,HAL_GetTick());
 		}
 
 
@@ -123,15 +122,12 @@ int main(void)
 
 			addValue(cardiographe,TAILLE,ADC_CAR);
 			updateGraphiqueCardiaque = HAL_GetTick();
-			//printf("%d\n",getAmpliResp(ADC_11));
 		}
 
 		if (HAL_GetTick()>=updateRespi+50){
 
 			addRespi(aerographe,TAILLE,ADC_POT);
 			updateRespi = HAL_GetTick();
-			//for(int16_t i =0 ; i<255;i++) printf("%d\n",FLASH_read_word(i));
-			//printf("fin !");
 		}
 
 		if(HAL_GetTick()>=updateTemp+1000){

@@ -75,8 +75,7 @@ void writeBPM(int16_t BPM){
 }
 void printCardioGraphe(int16_t *tableau, int taille){
 	ILI9341_DrawFilledRectangle(21,21,169,119,ILI9341_COLOR_WHITE);
-	int countDown= 0;
-	int countUp= 0;
+
 
 	uint16_t static yPrec = 119;
 	uint16_t static y = 119;
@@ -89,9 +88,6 @@ void printCardioGraphe(int16_t *tableau, int taille){
 		uint16_t calibrageValeur = (uint16_t)(tableau[i]*98/(MAX_Plage-MIN_Plage));
 		y = 119-calibrageValeur;
 		if(tableau[i]!=-1) ILI9341_DrawLine((x==1)?0:x-2, yPrec, x, y, ILI9341_COLOR_RED);
-		if(tableau[i]==MIN_Plage) countDown++;
-		if(tableau[i]==MAX_Plage) countUp++;
 
 	}
-	//if(countDown>(taille/2))stateHeart
 }

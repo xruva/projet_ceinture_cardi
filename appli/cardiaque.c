@@ -26,7 +26,7 @@ typedef struct {
     int16_t bpm;
 } Signal;
 
-Signal sig = {0, 0, 0,0};  // Déclaration d'une instance globale de la structure Signal
+Signal sig = {0, 0, 0, 0};  // Déclaration d'une instance globale de la structure Signal
 
 
 void Cardio_init(void)
@@ -38,7 +38,6 @@ void Cardio_init(void)
 void addValue(int16_t *tableau,int taille,adc_id_e channel){
 	int static i = 0;
 	int16_t newValue = ADC_getValue(channel);
-	//printf("1");
 
 	if(newValue < MIN_Plage){
 		newValue = 0;
@@ -47,22 +46,17 @@ void addValue(int16_t *tableau,int taille,adc_id_e channel){
 	}else {
 		newValue -= MIN_Plage;
 	}
-	//Delay_ms(10);
-	//printf("2");
 
     	tableau[i] = newValue;
 
     	i++;
     	if(i==taille){
     		i=0;
-    		//printf("3");
 
-    		//getValeurMoyenne(tableau,taille);
+    																														//getValeurMoyenne(tableau,taille);
     		printCardioGraphe(tableau,taille);
-    		//writeBPM(getBPM(tableau,taille));
+    																														''//writeBPM(getBPM(tableau,taille));
     	}
-
-
 }
 //Partie graphe
 void initBuffer(int16_t *tableau,int taille){
@@ -142,7 +136,7 @@ void recentreSignal(int16_t *tableau,int16_t taille){
 
 }
 
-//retourne 0 si il y a une variation
+
 int8_t checkVariation(int16_t *tableau, int16_t taille, int16_t delta){
 	int32_t result = 0;
 	for(int16_t i = 0 ; i < taille ; i++){
