@@ -10,7 +10,9 @@ float getTemp(adc_id_e channel){
 
 	int16_t valeurAnalogique = 0;
 	int16_t valeurTemporaire = 0;
-	//Phase d'échantillonage
+
+
+	//Phase d'ï¿½chantillonage
 	for (int i = 0; i < 30;i++){
 		valeurTemporaire = ADC_getValue(channel);
 		if(i>4){
@@ -24,7 +26,7 @@ float getTemp(adc_id_e channel){
     // Convertir la valeur analogique en tension (en volts)
     float tension = echantillonage / 4095.0 * 3.3;
 
-    // Convertir la tension en température en degrés Celsius (sensibilité de 19,5 mV/°C)
+    // Convertir la tension en tempï¿½rature en degrï¿½s Celsius (sensibilitï¿½ de 19,5 mV/ï¿½C)
     float temperature = (tension) * 19.53;
 
     return temperature;
