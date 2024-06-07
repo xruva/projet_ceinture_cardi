@@ -55,32 +55,8 @@ void addValue(int16_t *tableau,int taille,adc_id_e channel){
 
     																														//getValeurMoyenne(tableau,taille);
     		printCardioGraphe(tableau,taille);
-    																														''//writeBPM(getBPM(tableau,taille));
+    																														//writeBPM(getBPM(tableau,taille));
     	}
-}
-//Partie graphe
-void initBuffer(int16_t *tableau,int taille){
-	for(int i = 0; i < taille; i++){
-		tableau[i] = -1;
-	}
-}
-
-void updateRingBuffer(int16_t *tableau,int taille,adc_id_e channel) {
-	int16_t newValue = getCardio(channel);
-	if(newValue < MIN_Plage){
-		newValue=0;
-	}else if(newValue > MAX_Plage){
-		newValue=MAX_Plage-MIN_Plage;
-	}else {
-		newValue-=MIN_Plage;
-	}
-
-    for (int i = 0; i < taille; i++) {
-    	int16_t tempon = tableau[i];
-    	tableau[i] = newValue;
-    	newValue = tempon;
-
-    }
 }
 
 void getValeurMoyenne(int16_t *signal, int16_t taille) {
@@ -114,27 +90,6 @@ void getBPM(int16_t *tableau,int16_t taille){
 	printf("ouiBPM\n");
 }
 
-void recentreSignal(int16_t *tableau,int16_t taille){
-	int static i = 0;
-
-	int16_t plageMax = sig.max+10;
-	int16_t plageMin = sig.min-10;
-
-	//int16_t *new_signal = (int16_t*)malloc(taille * sizeof(int16_t));
-
-	for(int16_t i ; i < taille ; i++){
-		if(tableau[i] < plageMin){
-			new_signal[i] = 0;
-			}else if(tableau[i] > plageMax){
-				new_signal[i] = plageMax-plageMin;
-			}else {
-				new_signal[i] = tableau[i] - plageMin;
-			}
-	}
-
-	printCardioGraphe(new_signal, taille);
-
-}
 
 
 int8_t checkVariation(int16_t *tableau, int16_t taille, int16_t delta){

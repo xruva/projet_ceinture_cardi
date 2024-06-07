@@ -65,9 +65,7 @@ void writeTemp(float value){
 	writeValueFloat(value,211,87);
 }
 
-void writeCardio(int16_t value){
-	writeValueInt(value,200,37);
-}
+
 
 
 void writeBPM(int16_t BPM){
