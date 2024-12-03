@@ -6,16 +6,19 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../appli/affichageTFT.c \
+../appli/cardiaque.c \
 ../appli/main.c \
 ../appli/mpc9701.c 
 
 OBJS += \
 ./appli/affichageTFT.o \
+./appli/cardiaque.o \
 ./appli/main.o \
 ./appli/mpc9701.o 
 
 C_DEPS += \
 ./appli/affichageTFT.d \
+./appli/cardiaque.d \
 ./appli/main.d \
 ./appli/mpc9701.d 
 
@@ -27,7 +30,7 @@ appli/%.o appli/%.su appli/%.cyclo: ../appli/%.c appli/subdir.mk
 clean: clean-appli
 
 clean-appli:
-	-$(RM) ./appli/affichageTFT.cyclo ./appli/affichageTFT.d ./appli/affichageTFT.o ./appli/affichageTFT.su ./appli/main.cyclo ./appli/main.d ./appli/main.o ./appli/main.su ./appli/mpc9701.cyclo ./appli/mpc9701.d ./appli/mpc9701.o ./appli/mpc9701.su
+	-$(RM) ./appli/affichageTFT.cyclo ./appli/affichageTFT.d ./appli/affichageTFT.o ./appli/affichageTFT.su ./appli/cardiaque.cyclo ./appli/cardiaque.d ./appli/cardiaque.o ./appli/cardiaque.su ./appli/main.cyclo ./appli/main.d ./appli/main.o ./appli/main.su ./appli/mpc9701.cyclo ./appli/mpc9701.d ./appli/mpc9701.o ./appli/mpc9701.su
 
 .PHONY: clean-appli
 

@@ -28,7 +28,7 @@ appli/main.o: ../appli/main.c ../lib/hal/inc/stm32f1xx_hal.h \
  ../appli/affichageTFT.h ../lib/bsp/tft_ili9341/stm32f1_ili9341.h \
  ../lib/bsp/tft_ili9341/stm32f1_fonts.h \
  ../lib/bsp/tft_ili9341/stm32f1_xpt2046.h ../lib/bsp/macro_types.h \
- ../appli/mpc9701.h ../appli/config.h
+ ../appli/mpc9701.h ../appli/config.h ../appli/cardiaque.h
 ../lib/hal/inc/stm32f1xx_hal.h:
 ../lib/hal/inc/stm32f1xx_hal_conf.h:
 ../lib/hal/inc/stm32f1xx_hal_rcc.h:
@@ -85,3 +85,4 @@ appli/main.o: ../appli/main.c ../lib/hal/inc/stm32f1xx_hal.h \
 ../lib/bsp/macro_types.h:
 ../appli/mpc9701.h:
 ../appli/config.h:
+../appli/cardiaque.h:

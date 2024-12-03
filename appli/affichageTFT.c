@@ -1,6 +1,9 @@
 
 #include "affichageTFT.h"
+uint16_t MAX_Plage = 4095;
+uint16_t MIN_Plage = 3550;
 
+int stateHeart = 0;
 void initTemplate(void){
 
 	ILI9341_Init();
@@ -63,31 +66,46 @@ void writeCardio(int16_t value){
 	writeValueInt(value,200,37);
 }
 
-//Partie graphe
-void initBuffer(int16_t *tableau,int taille){
-	for(int i = 0; i < taille; i++){
-		tableau[i] = 0;
-	}
+
+void writeBPM(int16_t BPM){
+	ILI9341_printf(200, 30, &Font_7x10, ILI9341_COLOR_BLACK,ILI9341_COLOR_WHITE, "%d",BPM);
 }
-
-void updateRingBuffer(int16_t *tableau,int taille,adc_id_e channel) {
-	int16_t newValue = getCardio(channel);
-
-    for (int i = 0; i < taille; i++) {
-    	int16_t tempon = tableau[i];
-    	tableau[i] = newValue;
-    	newValue = tempon;
-
-    }
-}
-
 void printCardioGraphe(int16_t *tableau, int taille){
 	ILI9341_DrawFilledRectangle(21,21,169,119,ILI9341_COLOR_WHITE);
+	int countDown= 0;
+	int countUp= 0;
 
-	for(int i = 0; i < taille; i++){
-		int x = 21+i;
-		int y = 98-((int)(((tableau[i]/4095.0)*300)-200))+21;
-		ILI9341_DrawPixel(x,y,ILI9341_COLOR_RED);
+	uint16_t static yPrec = 119;
+	uint16_t static y = 119;
+
+	for(uint16_t i = 1; i < taille-2; i+=2){
+
+		uint16_t x = 22+i;
+		yPrec = y;
+
+		uint16_t calibrageValeur = (uint16_t)(tableau[i]*98/(MAX_Plage-MIN_Plage));
+		y = 119-calibrageValeur;
+		if(tableau[i]!=-1) ILI9341_DrawLine((x==1)?0:x-2, yPrec, x, y, ILI9341_COLOR_RED);
+		if(tableau[i]==MIN_Plage) countDown++;
+		if(tableau[i]==MAX_Plage) countUp++;
+
 	}
-	//ILI9341_DrawRectangle(20,20,170,120,ILI9341_COLOR_GREEN);
+	//if(countDown>(taille/2))stateHeart
+}
+
+void presence(int16_t *tableau, int taille){
+	switch(stateHeart){
+	//Trop loin ou personne
+	case 0 :
+		break;
+	//Quelqu'un + coeur bat
+	case 1 :
+		break;
+
+	//Quelqu'un + trop proche
+	case 2 :
+		break;
+	default :
+		break;
+	}
 }

@@ -15,17 +15,20 @@
 //#include "macro_types.h"
 //#include "stm32f1_gpio.h"
 #include "stm32f1_adc.h"
-//#include "MPU6050/stm32f1_mpu6050.h"
+#include "MPU6050/stm32f1_mpu6050.h"
 #include "tft_ili9341/stm32f1_ili9341.h"
 #include "tft_ili9341/stm32f1_xpt2046.h"
+
+extern uint16_t MAX_Plage;
+extern uint16_t MIN_Plage;
 
 void initTemplate(void);
 
 void writeTemp(float value);
 void writeCardio(int16_t value);
+void writeBPM(int16_t BPM);
 
-void initBuffer(int16_t *tableau,int taille);
-void updateRingBuffer(int16_t *tableau,int taille,adc_id_e channel);
+
 
 void printCardioGraphe(int16_t *tableau, int taille);
 

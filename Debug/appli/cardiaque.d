@@ -1,5 +1,5 @@
-lib/bsp/tft_ili9341/stm32f1_xpt2046.o: \
- ../lib/bsp/tft_ili9341/stm32f1_xpt2046.c ../appli/config.h \
+appli/cardiaque.o: ../appli/cardiaque.c ../appli/affichageTFT.h \
+ ../lib/bsp/stm32f1_adc.h ../appli/config.h \
  ../lib/hal/inc/stm32f1xx_hal.h ../lib/hal/inc/stm32f1xx_hal_conf.h \
  ../lib/hal/inc/stm32f1xx_hal_rcc.h ../lib/hal/inc/stm32f1xx_hal_def.h \
  ../lib/CMSIS/device/stm32f1xx.h ../lib/CMSIS/device/stm32f103xb.h \
@@ -24,7 +24,12 @@ lib/bsp/tft_ili9341/stm32f1_xpt2046.o: \
  ../lib/hal/inc/stm32f1xx_hal_uart.h ../lib/hal/inc/stm32f1xx_hal_usart.h \
  ../lib/hal/inc/stm32f1xx_hal_wwdg.h ../lib/hal/inc/stm32f1xx_hal_pcd.h \
  ../lib/hal/inc/stm32f1xx_ll_usb.h ../lib/hal/inc/stm32f1xx_hal_pcd_ex.h \
- ../lib/hal/inc/stm32f1xx_hal_hcd.h
+ ../lib/hal/inc/stm32f1xx_hal_hcd.h ../lib/bsp/macro_types.h \
+ ../lib/bsp/tft_ili9341/stm32f1_ili9341.h \
+ ../lib/bsp/tft_ili9341/stm32f1_fonts.h \
+ ../lib/bsp/tft_ili9341/stm32f1_xpt2046.h ../lib/bsp/macro_types.h
+../appli/affichageTFT.h:
+../lib/bsp/stm32f1_adc.h:
 ../appli/config.h:
 ../lib/hal/inc/stm32f1xx_hal.h:
 ../lib/hal/inc/stm32f1xx_hal_conf.h:
@@ -69,3 +74,8 @@ lib/bsp/tft_ili9341/stm32f1_xpt2046.o: \
 ../lib/hal/inc/stm32f1xx_ll_usb.h:
 ../lib/hal/inc/stm32f1xx_hal_pcd_ex.h:
 ../lib/hal/inc/stm32f1xx_hal_hcd.h:
+../lib/bsp/macro_types.h:
+../lib/bsp/tft_ili9341/stm32f1_ili9341.h:
+../lib/bsp/tft_ili9341/stm32f1_fonts.h:
+../lib/bsp/tft_ili9341/stm32f1_xpt2046.h:
+../lib/bsp/macro_types.h:
